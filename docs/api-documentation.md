@@ -66,6 +66,25 @@ Task list filters: `status`, `priority`, `assigned_to`, and `overdue=true|false`
 
 `GET /api/dashboard/` returns project/task counts, recent projects, recent assigned tasks, and an unread notification count for the current user.
 
+## WebSockets
+
+| Route | Permission | Server events |
+|---|---|---|
+| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added` |
+| `/ws/notifications/` | Authenticated user | `notification_created` for that user only |
+
+WebSockets use message-based JWT authentication. After the server sends `authentication_required`, send:
+
+```json
+{"type": "authenticate", "token": "<access-token>"}
+```
+
+The access token is deliberately excluded from the WebSocket URL. Invalid authentication closes with `4401`; project authorization failure closes with `4403`.
+
+## JWT and CSRF
+
+The REST client sends JWTs in the `Authorization` header and does not use authentication cookies. CSRF tokens are therefore not required for these API requests. Django admin continues to use sessions and Django's normal CSRF protection.
+
 ## Status Codes
 
 - `200`: successful read/update

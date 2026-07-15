@@ -1,136 +1,99 @@
 # TaskForge
 
-TaskForge is a collaborative full-stack project management platform being built for CodeAlpha Full Stack Development Task 3. The repository currently contains a tested Django REST API foundation and JWT authentication system. Group projects, task boards, comments, notifications, WebSockets, and the frontend are planned phases and are not represented as complete in this document.
+TaskForge is a collaborative full-stack project management platform built for CodeAlpha Full Stack Development Task 3. It combines a PostgreSQL-backed Django REST API with a responsive HTML, CSS, and vanilla JavaScript client.
 
 ## 1. Project Overview
 
-The final product is intended to provide a Trello- or Asana-style workspace where users can create group projects, manage project members, assign tasks, communicate through task comments, and track work on a Kanban board.
-
-Current implementation status:
-
-- Django 6 project foundation
-- PostgreSQL database connection
-- Environment-based configuration
-- Django REST Framework and CORS
-- API health check
-- Custom `accounts.User` model
-- JWT registration, username login, token refresh, and profile API
-- Django admin support for the custom user
-- Authentication test suite
+TaskForge lets teams create shared projects, manage project roles, assign work, move task cards through a Kanban workflow, discuss tasks, and receive live notifications. Backend permission checks are the security boundary; hidden frontend controls are only a usability aid.
 
 ## 2. CodeAlpha Requirements
 
 | Requirement | Status |
 |---|---|
-| Full-stack authentication | Backend complete and tested; frontend planned |
-| Group projects | Planned |
-| Task assignment | Planned |
-| Task comments and communication | Planned |
-| Project boards | Planned |
-| Task cards | Planned |
-| Backend management for users | Complete |
-| Backend management for projects, tasks, and comments | Planned |
-| Notifications | Bonus, planned after required features |
-| Real-time WebSocket updates | Bonus, planned after required features |
+| Group projects and membership | Complete |
+| Task creation and assignment | Complete |
+| Task comments and communication | Complete |
+| Full-stack JWT authentication | Complete |
+| Project boards and task cards | Complete |
+| User/project/task/comment administration | Complete |
+| Notifications bonus | Complete |
+| Django Channels WebSocket bonus | Complete and tested |
 
 ## 3. SDLC Methodology
 
-TaskForge follows an incremental Agile-style workflow:
+The project followed an incremental Agile workflow:
 
-1. Analyze one feature and its permission rules.
-2. Design database relationships and API contracts.
-3. Implement the backend on a dedicated Git branch.
-4. Generate and review migrations.
-5. Add automated tests for success, validation, and authorization paths.
-6. Integrate the frontend only after the API is stable.
-7. Run regression checks before merging.
-8. Update documentation to match behavior that actually exists.
-
-Completed phases are foundation and authentication. Projects, tasks, comments, frontend, notifications, and final audit remain separate phases.
+1. Requirements and acceptance criteria were recorded in `docs/`.
+2. Roles, relationships, constraints, endpoints, and permission rules were designed.
+3. Authentication, projects, tasks, comments, frontend, and real-time work were developed on focused branches.
+4. Each backend phase received validation and authorization tests.
+5. Features were integrated through the REST API and WebSocket events.
+6. System checks, migration checks, automated tests, JavaScript syntax checks, security scans, and responsive browser checks were run.
+7. Documentation was updated to describe only implemented behavior.
 
 ## 4. User Stories
 
-Implemented:
+- A visitor can register, log in, refresh a JWT, and manage their own profile.
+- An owner can create a project and manage its members and roles.
+- A manager can create, assign, update, move, and delete tasks.
+- A member can view shared work and update the status of a task assigned to them.
+- A project member can read and create task comments.
+- A comment author can edit or delete their comment; owners/managers can moderate deletion.
+- A user can view and mark notifications and receive new ones live.
+- A project member can see board changes without manually refreshing.
 
-- As a visitor, I can register with a unique username and email.
-- As a user, I can log in with my username and password.
-- As a client, I can refresh an access token with a valid refresh token.
-- As an authenticated user, I can view my safe profile data.
-- As an authenticated user, I can update my name, bio, and avatar.
-
-Planned:
-
-- As an owner, I can create a project and manage its members.
-- As a manager, I can create, assign, update, and delete project tasks.
-- As a member, I can view shared work and update tasks assigned to me.
-- As a project member, I can communicate through task comments.
-- As a user, I can see relevant notifications and board changes.
+Detailed acceptance criteria are in `docs/user-stories.md`.
 
 ## 5. Features
 
-### Implemented
-
-- Password hashing through Django authentication
-- Case-insensitive unique email validation
-- Optional avatar and 300-character bio
-- JWT access tokens with a 15-minute lifetime
-- JWT refresh tokens with a 7-day lifetime
-- Protected current-user endpoint
-- Development media configuration
-- PostgreSQL-backed migrations
-
-### Planned
-
+- Custom Django user with unique email, avatar, bio, and safe profile updates
+- JWT registration, login, refresh, and protected requests
 - Owner, manager, and member project roles
-- Project membership management
-- Task assignment, priority, due date, status, and position
+- Project membership by username or email
+- Task priority, assignee, due date, status, position, filters, and overdue state
 - To Do, In Progress, and Done Kanban columns
-- Task comments
-- Vanilla HTML, CSS, and JavaScript frontend
-- Notifications and optional Django Channels integration
+- Native drag-and-drop plus accessible status selectors
+- Task discussion with 2,000-character validation
+- Notification inbox, unread count, mark-read, and mark-all-read
+- Dashboard counts and recent work
+- Responsive login, registration, dashboard, projects, board, task detail, and profile pages
+- Django admin for users, projects, memberships, tasks, comments, and notifications
+- Secure JWT-authenticated WebSockets using first-message authentication
 
 ## 6. User Roles and Permissions
 
-Project-level roles are part of the planned project phase and are not yet enforced by the current API.
+| Action | Owner | Manager | Member |
+|---|---:|---:|---:|
+| View project, members, tasks, comments | Yes | Yes | Yes |
+| Edit/delete project | Yes | No | No |
+| Add/remove members or change roles | Yes | No | No |
+| Create/assign/edit/delete tasks | Yes | Yes | No |
+| Change any task status | Yes | Yes | No |
+| Change assigned task status | Yes | Yes | Yes |
+| Add comments | Yes | Yes | Yes |
+| Edit own comment | Yes | Yes | Yes |
+| Delete own comment | Yes | Yes | Yes |
+| Moderate comment deletion | Yes | Yes | No |
 
-| Role | Planned permissions |
-|---|---|
-| Owner | Manage the project, membership, roles, tasks, and comments |
-| Manager | View members and manage tasks and comments; cannot delete the project |
-| Member | View shared work, update assigned task status, and manage own comments |
-
-All permission rules will be enforced by the backend. Frontend button visibility will not be treated as security.
+An owner membership cannot be removed or downgraded through normal membership endpoints.
 
 ## 7. Technology Stack
 
 - Python 3.12
-- Django 6.0.6
-- Django REST Framework 3.17.1
-- PostgreSQL 17
-- Psycopg 3
+- Django 6.0.6 and Django REST Framework 3.17.1
+- PostgreSQL with Psycopg 3
 - Simple JWT 5.5.1
-- django-cors-headers
-- python-dotenv
-- Pillow
-- Planned frontend: HTML5, CSS3, and vanilla JavaScript
+- Django Channels 4.3.2 and Daphne 4.2.2
+- In-memory channel layer for local development
+- HTML5, CSS3, and vanilla JavaScript
 
-No React, Vue, Angular, TypeScript, Bootstrap, Tailwind, Firebase, or Node.js backend is used.
+No frontend framework, CSS framework, Firebase, or Node.js backend is used.
 
 ## 8. Database Design
 
-Current relationship:
-
-```text
-accounts.User
-  id, username, email, first_name, last_name,
-  avatar, bio, is_active, date_joined, updated_at
-```
-
-Planned relationship overview:
-
 ```text
 User 1---* Project (owner)
-User *---* Project (through ProjectMember with a role)
+User *---* Project (through ProjectMember.role)
 Project 1---* Task
 User 1---* Task (creator)
 User 1---* Task (optional assignee)
@@ -139,100 +102,57 @@ User 1---* Comment
 User 1---* Notification (recipient)
 ```
 
-The custom user model is configured through `AUTH_USER_MODEL = "accounts.User"` and was created in `accounts/0001_initial.py` before the clean migration history was applied.
+Foreign keys, unique membership constraints, one-owner constraints, protected project ownership, and safe cascading relationships keep data consistent. See `docs/database-design.md`.
 
 ## 9. Project Structure
 
 ```text
-CodeAlpha_ProjectManagementTool/
-|-- accounts/                 Custom user and authentication API
-|   |-- migrations/
-|   |-- admin.py
-|   |-- models.py
-|   |-- serializers.py
-|   |-- tests.py
-|   |-- urls.py
-|   `-- views.py
-|-- comments/                 Reserved app shell for comments phase
-|-- config/                   Settings, root URLs, ASGI, and WSGI
-|-- projects/                 Reserved app shell for projects phase
-|-- tasks/                    Reserved app shell for tasks phase
-|-- .env.example              Safe environment-variable template
-|-- .gitignore
-|-- manage.py
-|-- README.md
-`-- requirements.txt
+accounts/       custom user, JWT authentication, profile API
+projects/       projects, membership, roles, dashboard, board consumer
+tasks/          task workflow, assignment, filtering, permissions
+comments/       task discussion and comment permissions
+notifications/  notification API, service, broadcasts, consumer
+config/         settings, URLs, ASGI/WSGI, WebSocket routing
+frontend/       static HTML, CSS, and vanilla JavaScript client
+tests/          collaboration and WebSocket integration tests
+docs/           requirements, design, API, and testing documents
 ```
 
 ## 10. Installation
 
-### Prerequisites
-
-Install Python 3, PostgreSQL with pgAdmin, Git, VS Code, and the VS Code Python extension.
-
-### Windows PowerShell setup
-
-1. Open the project directory:
+Windows PowerShell:
 
 ```powershell
 cd "D:\Vs Studio\CodeAlpha_ProjectManagementTool"
-```
-
-2. Create and activate a virtual environment:
-
-```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
-
-If PowerShell blocks activation, allow scripts for the current terminal only:
-
-```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\.venv\Scripts\Activate.ps1
-```
-
-3. Install dependencies:
-
-```powershell
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-```
-
-4. Create the local environment file:
-
-```powershell
 Copy-Item .env.example .env
 ```
 
-5. Replace the placeholders in `.env` with local values. Never commit `.env`.
+Select `.venv\Scripts\python.exe` with VS Code's **Python: Select Interpreter** command. Edit `.env` with local values and never commit it.
 
 ## 11. PostgreSQL Setup
 
-PostgreSQL must be running on the host and port configured in `.env`.
+In pgAdmin:
 
-### pgAdmin method
+1. Expand **Servers** and connect to the local PostgreSQL server.
+2. Right-click **Databases**, then select **Create > Database**.
+3. Set the database name to `taskforge`.
+4. Select the PostgreSQL user configured in `.env` as owner.
+5. Save, then confirm the new database appears under **Databases**.
 
-1. Open pgAdmin.
-2. Expand `Servers` and connect to PostgreSQL 17.
-3. Right-click `Databases`.
-4. Select `Create` and then `Database`.
-5. Enter `taskforge` as the database name.
-6. Select the configured PostgreSQL user as owner.
-7. Save the database.
-
-### SQL method
-
-Run this as a PostgreSQL administrator only when the database does not exist:
+Equivalent administrator SQL:
 
 ```sql
 CREATE DATABASE taskforge;
 ```
 
-Do not place the PostgreSQL password in source files or Git commands.
+Use the password that was set during PostgreSQL installation or changed in pgAdmin. Put it only in `POSTGRES_PASSWORD` inside `.env`.
 
 ## 12. Environment Variables
-
-The application currently reads these exact variable names:
 
 ```dotenv
 DJANGO_SECRET_KEY=replace-with-a-long-random-secret-key
@@ -245,20 +165,16 @@ POSTGRES_PASSWORD=replace-with-your-postgres-password
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+CORS_ALLOWED_ORIGINS=http://127.0.0.1:5500,http://localhost:5500
 ```
 
-Generate a Django secret key locally:
+Generate a development secret locally:
 
 ```powershell
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-Copy the result into `DJANGO_SECRET_KEY` in `.env`. Do not share or commit it. Update CORS origins when the frontend development port is selected.
-
 ## 13. Migrations
-
-Run migrations after the environment and database are configured:
 
 ```powershell
 python manage.py check
@@ -266,177 +182,159 @@ python manage.py makemigrations --check --dry-run
 python manage.py migrate
 ```
 
-Expected output on a current database:
+Expected current output includes `System check identified no issues`, `No changes detected`, and either applied migrations or `No migrations to apply`.
 
-```text
-System check identified no issues (0 silenced).
-No changes detected
-No migrations to apply.
-```
+## 14. Running Backend
 
-Do not delete or recreate migrations casually. The custom user model must remain part of the initial accounts migration.
-
-## 14. Running the Backend
-
-Start the Django development server:
+With the virtual environment active:
 
 ```powershell
-python manage.py runserver
+python manage.py runserver 127.0.0.1:8000
 ```
 
-Useful URLs:
+Daphne's Channels-aware `runserver` serves HTTP and WebSocket traffic. Open:
 
-- API health: `http://127.0.0.1:8000/api/health/`
-- Django admin: `http://127.0.0.1:8000/admin/`
+- Health API: `http://127.0.0.1:8000/api/health/`
+- Admin: `http://127.0.0.1:8000/admin/`
 
-Create an administrator when needed:
+Create an administrator when required:
 
 ```powershell
 python manage.py createsuperuser
 ```
 
-The development server is not a production server.
+## 15. Running Frontend
 
-## 15. Running the Frontend
+TaskForge uses one clear static-client setup (Option B). In a second PowerShell terminal:
 
-The frontend has not been implemented yet. The planned approach is a single organized vanilla HTML/CSS/JavaScript frontend served through one documented development method. No frontend run command is currently valid.
+```powershell
+cd "D:\Vs Studio\CodeAlpha_ProjectManagementTool"
+.\.venv\Scripts\Activate.ps1
+python -m http.server 5500 --bind 127.0.0.1 --directory frontend
+```
+
+Open `http://127.0.0.1:5500/`. Keep both terminal servers running. The frontend calls the API and WebSockets at `127.0.0.1:8000`.
 
 ## 16. API Endpoints
 
-| Method | Path | Permission | Status |
-|---|---|---|---|
-| GET | `/api/health/` | Public | Implemented |
-| POST | `/api/auth/register/` | Public | Implemented |
-| POST | `/api/auth/login/` | Public | Implemented; username login |
-| POST | `/api/auth/token/refresh/` | Public | Implemented |
-| GET | `/api/auth/me/` | JWT required | Implemented |
-| PATCH | `/api/auth/me/` | JWT required | Implemented |
-| `/api/projects/...` | Project member rules | Planned |
-| `/api/tasks/...` | Project member rules | Planned |
-| `/api/comments/...` | Project member rules | Planned |
-| `/api/notifications/...` | JWT required | Bonus, planned |
+| Method | Path | Permission |
+|---|---|---|
+| GET | `/api/health/` | Public |
+| POST | `/api/auth/register/` | Public |
+| POST | `/api/auth/login/` | Public |
+| POST | `/api/auth/token/refresh/` | Public |
+| GET, PATCH | `/api/auth/me/` | Authenticated user |
+| GET, POST | `/api/projects/` | Authenticated; creator becomes owner |
+| GET | `/api/projects/{id}/` | Project member |
+| PATCH, DELETE | `/api/projects/{id}/` | Owner |
+| GET | `/api/projects/{id}/members/` | Project member |
+| POST | `/api/projects/{id}/members/` | Owner |
+| PATCH, DELETE | `/api/projects/{id}/members/{member_id}/` | Owner; owner protected |
+| GET | `/api/projects/{id}/tasks/` | Project member |
+| POST | `/api/projects/{id}/tasks/` | Owner or manager |
+| GET | `/api/tasks/{id}/` | Project member |
+| PATCH, DELETE | `/api/tasks/{id}/` | Owner or manager |
+| PATCH | `/api/tasks/{id}/status/` | Owner, manager, or assignee |
+| PATCH | `/api/tasks/{id}/assign/` | Owner or manager |
+| PATCH | `/api/tasks/{id}/position/` | Owner or manager |
+| GET, POST | `/api/tasks/{id}/comments/` | Project member |
+| PATCH | `/api/comments/{id}/` | Comment author |
+| DELETE | `/api/comments/{id}/` | Author, owner, or manager |
+| GET | `/api/notifications/` | Authenticated recipient |
+| PATCH | `/api/notifications/{id}/read/` | Authenticated recipient |
+| PATCH | `/api/notifications/read-all/` | Authenticated recipient |
+| GET | `/api/dashboard/` | Authenticated user |
 
-### Register
-
-```json
-{
-  "username": "sami",
-  "email": "sami@example.com",
-  "first_name": "Sami",
-  "last_name": "Ullah",
-  "password": "StrongPass123!",
-  "password_confirm": "StrongPass123!"
-}
-```
-
-A successful registration returns HTTP 201 with safe user data plus access and refresh tokens. Password fields are never returned.
-
-### Login
-
-```json
-{
-  "username": "sami",
-  "password": "StrongPass123!"
-}
-```
-
-### Refresh an access token
-
-```json
-{
-  "refresh": "<refresh-token>"
-}
-```
-
-### Access a protected endpoint
-
-```http
-Authorization: Bearer <access-token>
-```
-
-### Update the current profile
-
-```json
-{
-  "first_name": "Sami",
-  "last_name": "Ullah",
-  "bio": "Project manager"
-}
-```
-
-The profile endpoint does not allow changes to username, email, password, staff status, superuser status, ID, or join date.
+Use `Authorization: Bearer <access-token>` for protected APIs. Task list filters are `status`, `priority`, `assigned_to`, and `overdue=true|false`. See `docs/api-documentation.md` for request details.
 
 ## 17. WebSocket Events
 
-WebSockets are not implemented. Django Channels, Daphne, consumers, WebSocket routes, and event broadcasts will only be added after required project, task, comment, and frontend features pass their tests. Redis is recommended for a future production channel layer.
+| Route | Access | Events |
+|---|---|---|
+| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added` |
+| `/ws/notifications/` | Authenticated user, own group only | `notification_created` |
+
+The server first sends:
+
+```json
+{"type": "authentication_required"}
+```
+
+The client responds over the open socket, not in the URL:
+
+```json
+{"type": "authenticate", "token": "<access-token>"}
+```
+
+Invalid tokens close with code `4401`; unauthorized project access closes with `4403`. The in-memory layer is appropriate for one local process only; production deployment should use a shared channel layer such as Redis.
 
 ## 18. Testing
-
-Run the current checks:
 
 ```powershell
 python manage.py check
 python manage.py makemigrations --check --dry-run
 python manage.py migrate
-python manage.py test accounts
+python manage.py test
 ```
 
-The current authentication suite contains 13 tests covering:
+Frontend syntax check when Node.js is available:
 
-- Hashed passwords and normalized email
-- Duplicate username and case-insensitive duplicate email rejection
-- Password confirmation
-- Registration response safety
-- Valid and invalid login
-- Refresh tokens
-- JWT-protected profile retrieval
-- Allowed profile updates
-- Protected-field update prevention
+```powershell
+Get-ChildItem frontend\js\*.js | ForEach-Object { node --check $_.FullName }
+```
 
-Most recent verified result:
+Manual flows are tracked in `docs/testing-checklist.md`.
+
+Latest full verification:
 
 ```text
-Ran 13 tests
+Found 57 test(s).
+Ran 57 tests in 475.650s
 OK
+System check identified no issues (0 silenced).
 ```
 
 ## 19. Security
 
-- `.env` is Git ignored.
-- Passwords use Django's salted one-way hashing.
-- Password fields are write-only and never returned by serializers.
-- PostgreSQL credentials are not hard-coded.
-- Protected API requests use JWT bearer authentication.
-- Email uniqueness is enforced case-insensitively.
-- Profile updates expose only explicitly allowed fields.
-- Media files are ignored by Git and served by Django only in debug mode.
-- Future project permissions must be enforced in backend permission classes.
-- JWT APIs do not rely on cookie-based session authentication, while Django admin retains its normal session login.
+- `.env`, virtual environments, media, caches, logs, database dumps, and runtime files are ignored.
+- Passwords are hashed and never returned.
+- JWT protects every private REST endpoint.
+- Querysets hide unrelated project data.
+- Backend permissions prevent role elevation, non-member assignment, unauthorized edits, and comment ownership violations.
+- Serializer validation does not trust browser values.
+- Frontend user text is rendered with `textContent`/DOM nodes; unsafe `innerHTML` is not used.
+- JWT APIs use authorization headers rather than cookie authentication, so normal CSRF tokens are not used for API calls. Django admin still uses session authentication and CSRF protection.
+- WebSocket access tokens are sent as the first socket message, never in URLs or logs.
+- Multi-record project creation and notification/broadcast work use transaction-aware behavior.
 
 ## 20. Screenshots
 
-No application screenshots are available because the frontend and project-management screens are not implemented yet. Screenshots should be added only after the actual dashboard, projects page, board, task details, and responsive views exist.
+Review screenshots are stored in `docs/screenshots/`:
+
+- `login-desktop.png`: desktop authentication and board preview
+- `login-mobile.png`: responsive authentication layout
+
+![TaskForge desktop login](docs/screenshots/login-desktop.png)
+
+![TaskForge responsive login](docs/screenshots/login-mobile.png)
+
+The running application also provides dashboard, projects, Kanban board, task details, comments, notifications, and profile views after login.
 
 ## 21. Git Workflow
 
-Current development uses feature branches and focused commits.
+Completed branches follow the feature sequence:
 
-```powershell
-git checkout main
-git checkout -b feature/projects
+```text
+feature/authentication
+feature/projects
+feature/tasks
+feature/comments
+feature/frontend
+feature/notifications
+chore/final-audit
 ```
 
-Recommended sequence:
-
-1. `feature/authentication`
-2. `feature/projects`
-3. `feature/tasks`
-4. `feature/comments`
-5. `feature/frontend`
-6. `feature/notifications`
-7. `chore/final-audit`
-
-Before committing:
+Inspect before committing:
 
 ```powershell
 git status
@@ -444,7 +342,7 @@ git diff --check
 python manage.py test
 ```
 
-Never push unless the correct remote and credentials are configured and pushing is explicitly intended.
+No remote push is performed automatically.
 
 ## 22. Author
 
@@ -454,27 +352,18 @@ Never push unless the correct remote and credentials are configured and pushing 
 
 ## 23. License
 
-No open-source license file is currently included. Unless a license is added, the source remains under the author's default copyright rights.
+No separate open-source license is included. The source remains under the author's default copyright rights unless a license is added.
 
 ## Troubleshooting
 
-### `password authentication failed for user "postgres"`
+**`password authentication failed for user "postgres"`**: ensure the `.env` username/password match the credentials that work in pgAdmin. Restart the backend after editing `.env`.
 
-Confirm `POSTGRES_USER` and `POSTGRES_PASSWORD` in `.env`, then verify the same credentials in pgAdmin. Do not paste the password into source code.
+**`database "taskforge" does not exist`**: create it through pgAdmin as described above.
 
-### `database "taskforge" does not exist`
+**`No module named rest_framework`**: VS Code or the terminal is using global Python. Activate `.venv` and select `.venv\Scripts\python.exe`.
 
-Create the database through pgAdmin or with the SQL command in the PostgreSQL Setup section.
+**HTTP 401**: refresh the access token through `/api/auth/token/refresh/`; invalid refresh tokens require signing in again.
 
-### `No module named ...`
+**Frontend cannot call API**: confirm backend port `8000`, frontend port `5500`, and `CORS_ALLOWED_ORIGINS` values.
 
-Activate `.venv` and install the requirements again:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-```
-
-### HTTP 401 from `/api/auth/me/`
-
-Include a current access token in the `Authorization: Bearer <access-token>` header. If the access token expired, use `/api/auth/token/refresh/` with the refresh token.
+**WebSocket does not connect**: run the backend with the activated environment where Channels and Daphne are installed, and use `127.0.0.1` consistently.
