@@ -5,6 +5,7 @@ from comments.models import Comment
 from comments.permissions import CommentObjectPermission
 from comments.serializers import CommentSerializer
 from notifications.models import Notification
+from notifications.realtime import broadcast_project_event
 from notifications.services import notify_users
 from tasks.models import Task
 
@@ -33,6 +34,17 @@ class CommentListCreateView(generics.ListCreateAPIView):
             message=f'{self.request.user.username} commented on "{task.title}".',
             project=task.project,
             task=task,
+        )
+        broadcast_project_event(
+            task.project_id,
+            'comment_created',
+            {
+                'id': comment.pk,
+                'task_id': task.pk,
+                'user_id': comment.user_id,
+                'message': comment.message,
+                'created_at': comment.created_at.isoformat(),
+            },
         )
         return comment
 

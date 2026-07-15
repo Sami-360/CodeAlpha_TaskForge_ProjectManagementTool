@@ -5,6 +5,7 @@ from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from notifications.models import Notification
+from notifications.realtime import broadcast_project_event
 from notifications.services import notify_user, notify_users
 
 from projects.models import Project
@@ -17,6 +18,16 @@ from tasks.serializers import (
     TaskSerializer,
     TaskStatusSerializer,
 )
+
+
+def task_event_data(task):
+    return {
+        'id': task.pk,
+        'status': task.status,
+        'position': task.position,
+        'assigned_to_id': task.assigned_to_id,
+        'updated_at': task.updated_at.isoformat(),
+    }
 
 
 def task_queryset_for(user):
@@ -87,6 +98,11 @@ class TaskListCreateView(generics.ListCreateAPIView):
             project=task.project,
             task=task,
         )
+        broadcast_project_event(
+            task.project_id,
+            'task_created',
+            task_event_data(task),
+        )
 
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -112,6 +128,17 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
             project=task.project,
             task=task,
         )
+        broadcast_project_event(
+            task.project_id,
+            'task_updated',
+            task_event_data(task),
+        )
+
+    def perform_destroy(self, instance):
+        project_id = instance.project_id
+        task_id = instance.pk
+        instance.delete()
+        broadcast_project_event(project_id, 'task_deleted', {'id': task_id})
 
 
 class TaskStatusView(generics.UpdateAPIView):
@@ -140,6 +167,11 @@ class TaskStatusView(generics.UpdateAPIView):
                 project=task.project,
                 task=task,
             )
+            broadcast_project_event(
+                task.project_id,
+                'task_status_changed',
+                task_event_data(task),
+            )
 
 
 class TaskAssignmentView(generics.UpdateAPIView):
@@ -162,6 +194,11 @@ class TaskAssignmentView(generics.UpdateAPIView):
             project=task.project,
             task=task,
         )
+        broadcast_project_event(
+            task.project_id,
+            'task_updated',
+            task_event_data(task),
+        )
 
 
 class TaskPositionView(generics.UpdateAPIView):
@@ -175,4 +212,9 @@ class TaskPositionView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         if not can_manage_tasks(serializer.instance.project, self.request.user):
             raise PermissionDenied('Only project owners and managers can move tasks.')
-        serializer.save()
+        task = serializer.save()
+        broadcast_project_event(
+            task.project_id,
+            'task_status_changed',
+            task_event_data(task),
+        )

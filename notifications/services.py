@@ -1,4 +1,5 @@
 from notifications.models import Notification
+from notifications.realtime import broadcast_notification_event
 
 
 def notify_user(
@@ -12,7 +13,7 @@ def notify_user(
 ):
     if recipient is None or (sender and recipient.pk == sender.pk):
         return None
-    return Notification.objects.create(
+    notification = Notification.objects.create(
         recipient=recipient,
         sender=sender,
         notification_type=notification_type,
@@ -20,6 +21,8 @@ def notify_user(
         project=project,
         task=task,
     )
+    broadcast_notification_event(notification)
+    return notification
 
 
 def notify_users(*, recipients, **notification_data):

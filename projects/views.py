@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 from notifications.models import Notification
+from notifications.realtime import broadcast_project_event
 from notifications.services import notify_user
 
 from projects.models import Project, ProjectMember
@@ -94,6 +95,15 @@ class ProjectMemberListCreateView(generics.ListCreateAPIView):
             notification_type=Notification.Type.MEMBER_ADDED,
             message=f'You were added to project "{project.name}" as {membership.role}.',
             project=project,
+        )
+        broadcast_project_event(
+            project.pk,
+            'member_added',
+            {
+                'membership_id': membership.pk,
+                'user_id': membership.user_id,
+                'role': membership.role,
+            },
         )
 
     def create(self, request, *args, **kwargs):
