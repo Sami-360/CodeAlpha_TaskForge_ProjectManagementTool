@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register | TaskForge</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script defer src="../js/config.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/common.js"></script>
+  <script defer src="../js/auth.js"></script>
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-form-side">
+      <form id="register-form" class="auth-form" novalidate>
+        <a class="brand" href="../index.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+        <h1>Create your account</h1>
+        <p>Start organizing collaborative work.</p>
+        <div id="form-error" class="field-error" role="alert"></div>
+        <div class="form-grid">
+          <div class="form-row">
+            <div class="field"><label for="first_name">First name</label><input id="first_name" name="first_name" autocomplete="given-name"></div>
+            <div class="field"><label for="last_name">Last name</label><input id="last_name" name="last_name" autocomplete="family-name"></div>
+          </div>
+          <div class="field"><label for="username">Username</label><input id="username" name="username" autocomplete="username" required></div>
+          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+          <div class="form-row">
+            <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="new-password" required></div>
+            <div class="field"><label for="password_confirm">Confirm password</label><input id="password_confirm" name="password_confirm" type="password" autocomplete="new-password" required></div>
+          </div>
+          <button class="btn btn-primary" type="submit">Create account</button>
+        </div>
+        <p class="auth-switch">Already registered? <a href="login.html">Sign in</a></p>
+      </form>
+    </section>
+    <aside class="auth-visual" aria-label="TaskForge project preview">
+      <div class="board-preview">
+        <h2>One place for the whole project.</h2>
+        <p>Keep ownership, assignments, discussions, and progress visible.</p>
+        <div class="preview-columns">
+          <section class="preview-column"><h3>TO DO</h3><article class="preview-task"><strong>Invite the project team</strong><span>Owner action</span></article></section>
+          <section class="preview-column"><h3>IN PROGRESS</h3><article class="preview-task"><strong>Design dashboard cards</strong><span>Due this week</span></article><article class="preview-task"><strong>Connect API flows</strong><span>Medium priority</span></article></section>
+          <section class="preview-column"><h3>DONE</h3><article class="preview-task"><strong>Create workspace</strong><span>Completed</span></article></section>
+        </div>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>

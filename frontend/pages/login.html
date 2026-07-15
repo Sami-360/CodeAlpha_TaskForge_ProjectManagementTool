@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | TaskForge</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script defer src="../js/config.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/common.js"></script>
+  <script defer src="../js/auth.js"></script>
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-form-side">
+      <form id="login-form" class="auth-form" novalidate>
+        <a class="brand" href="../index.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+        <h1>Welcome back</h1>
+        <p>Sign in to continue to your workspace.</p>
+        <div id="form-error" class="field-error" role="alert"></div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="username">Username</label>
+            <input id="username" name="username" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="btn btn-primary" type="submit">Sign in</button>
+        </div>
+        <p class="auth-switch">New to TaskForge? <a href="register.html">Create an account</a></p>
+      </form>
+    </section>
+    <aside class="auth-visual" aria-label="TaskForge board preview">
+      <div class="board-preview">
+        <h2>Work moves forward here.</h2>
+        <p>A clear board for shared projects, assignments, and daily progress.</p>
+        <div class="preview-columns">
+          <section class="preview-column"><h3>TO DO</h3><article class="preview-task"><strong>Define launch checklist</strong><span>High priority</span></article><article class="preview-task"><strong>Review member roles</strong><span>2 comments</span></article></section>
+          <section class="preview-column"><h3>IN PROGRESS</h3><article class="preview-task"><strong>Build project board</strong><span>Assigned to Sami</span></article></section>
+          <section class="preview-column"><h3>DONE</h3><article class="preview-task"><strong>API foundation</strong><span>Completed</span></article></section>
+        </div>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>
