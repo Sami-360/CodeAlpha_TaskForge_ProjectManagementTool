@@ -20,13 +20,17 @@ from django.contrib import admin
 from django.urls import include, path
 
 from config.views import health_check
+from projects.views import DashboardView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/health/', health_check, name='api-health'),
     path('api/auth/', include('accounts.urls')),
     path('api/projects/', include('projects.urls')),
+    path('api/dashboard/', DashboardView.as_view(), name='dashboard'),
     path('api/', include('tasks.urls')),
+    path('api/', include('comments.urls')),
+    path('api/notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG:

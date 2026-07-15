@@ -1,9 +1,14 @@
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
+
+from notifications.models import Notification
+from notifications.services import notify_user
 
 from projects.models import Project, ProjectMember
 from projects.permissions import ProjectObjectPermission, get_project_role
@@ -13,13 +18,25 @@ from projects.serializers import (
     ProjectMemberSerializer,
     ProjectSerializer,
 )
+from tasks.models import Task
+from tasks.serializers import TaskSerializer
 
 
 def project_queryset_for(user):
     return (
         Project.objects.filter(memberships__user=user)
         .select_related('owner')
-        .annotate(member_count=Count('memberships', distinct=True))
+        .annotate(
+            member_count=Count('memberships', distinct=True),
+            task_total=Count('tasks', distinct=True),
+            task_todo=Count('tasks', filter=Q(tasks__status=Task.Status.TODO), distinct=True),
+            task_in_progress=Count(
+                'tasks',
+                filter=Q(tasks__status=Task.Status.IN_PROGRESS),
+                distinct=True,
+            ),
+            task_done=Count('tasks', filter=Q(tasks__status=Task.Status.DONE), distinct=True),
+        )
         .distinct()
     )
 
@@ -70,7 +87,14 @@ class ProjectMemberListCreateView(generics.ListCreateAPIView):
         project = self.get_project()
         if get_project_role(project, self.request.user) != ProjectMember.Role.OWNER:
             raise PermissionDenied('Only the project owner can add members.')
-        serializer.save()
+        membership = serializer.save()
+        notify_user(
+            recipient=membership.user,
+            sender=self.request.user,
+            notification_type=Notification.Type.MEMBER_ADDED,
+            message=f'You were added to project "{project.name}" as {membership.role}.',
+            project=project,
+        )
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -113,3 +137,45 @@ class ProjectMemberDetailView(generics.RetrieveUpdateDestroyAPIView):
         if instance.role == ProjectMember.Role.OWNER:
             raise ValidationError('The owner membership cannot be removed.')
         instance.delete()
+
+
+class DashboardView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        projects = project_queryset_for(request.user)
+        tasks = Task.objects.filter(project__memberships__user=request.user).distinct()
+        assigned_tasks = tasks.filter(assigned_to=request.user)
+        today = timezone.localdate()
+
+        return Response(
+            {
+                'total_projects': projects.count(),
+                'owned_projects': projects.filter(owner=request.user).count(),
+                'assigned_tasks': assigned_tasks.count(),
+                'todo_tasks': assigned_tasks.filter(status=Task.Status.TODO).count(),
+                'in_progress_tasks': assigned_tasks.filter(
+                    status=Task.Status.IN_PROGRESS
+                ).count(),
+                'completed_tasks': assigned_tasks.filter(status=Task.Status.DONE).count(),
+                'overdue_tasks': assigned_tasks.filter(due_date__lt=today).exclude(
+                    status=Task.Status.DONE
+                ).count(),
+                'unread_notifications': Notification.objects.filter(
+                    recipient=request.user,
+                    is_read=False,
+                ).count(),
+                'recent_projects': ProjectSerializer(
+                    projects[:5],
+                    many=True,
+                    context={'request': request},
+                ).data,
+                'recent_assigned_tasks': TaskSerializer(
+                    assigned_tasks.select_related(
+                        'project', 'created_by', 'assigned_to'
+                    ).order_by('-updated_at')[:5],
+                    many=True,
+                    context={'request': request},
+                ).data,
+            }
+        )

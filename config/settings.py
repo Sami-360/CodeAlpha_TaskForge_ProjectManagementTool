@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'tasks.apps.TasksConfig',
     'comments.apps.CommentsConfig',
+    'notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [

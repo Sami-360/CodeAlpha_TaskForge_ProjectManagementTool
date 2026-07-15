@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Count, Q
 from rest_framework import serializers
 
 from projects.models import Project, ProjectMember
@@ -31,6 +31,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     owner = UserSummarySerializer(read_only=True)
     member_count = serializers.SerializerMethodField()
     current_user_role = serializers.SerializerMethodField()
+    task_stats = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -41,6 +42,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'owner',
             'member_count',
             'current_user_role',
+            'task_stats',
             'created_at',
             'updated_at',
         ]
@@ -59,6 +61,22 @@ class ProjectSerializer(serializers.ModelSerializer):
     def get_member_count(self, project):
         annotated_count = getattr(project, 'member_count', None)
         return annotated_count if annotated_count is not None else project.memberships.count()
+
+    def get_task_stats(self, project):
+        annotated = {
+            'total': getattr(project, 'task_total', None),
+            'todo': getattr(project, 'task_todo', None),
+            'in_progress': getattr(project, 'task_in_progress', None),
+            'done': getattr(project, 'task_done', None),
+        }
+        if all(value is not None for value in annotated.values()):
+            return annotated
+
+        counts = {'total': 0, 'todo': 0, 'in_progress': 0, 'done': 0}
+        for item in project.tasks.values('status').annotate(count=Count('id')):
+            counts[item['status']] = item['count']
+            counts['total'] += item['count']
+        return counts
 
     @transaction.atomic
     def create(self, validated_data):

@@ -1,8 +1,11 @@
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied, ValidationError
+
+from notifications.models import Notification
+from notifications.services import notify_user, notify_users
 
 from projects.models import Project
 from projects.permissions import can_manage_tasks
@@ -17,9 +20,12 @@ from tasks.serializers import (
 
 
 def task_queryset_for(user):
-    return Task.objects.filter(project__memberships__user=user).select_related(
-        'project', 'created_by', 'assigned_to'
-    ).distinct()
+    return (
+        Task.objects.filter(project__memberships__user=user)
+        .select_related('project', 'created_by', 'assigned_to')
+        .annotate(comment_count=Count('comments', distinct=True))
+        .distinct()
+    )
 
 
 class TaskListCreateView(generics.ListCreateAPIView):
@@ -72,7 +78,15 @@ class TaskListCreateView(generics.ListCreateAPIView):
         project = self.get_project()
         if not can_manage_tasks(project, self.request.user):
             raise PermissionDenied('Only project owners and managers can create tasks.')
-        serializer.save()
+        task = serializer.save()
+        notify_user(
+            recipient=task.assigned_to,
+            sender=self.request.user,
+            notification_type=Notification.Type.TASK_ASSIGNED,
+            message=f'You were assigned task "{task.title}".',
+            project=task.project,
+            task=task,
+        )
 
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -87,6 +101,17 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in {'PATCH', 'PUT'}:
             context['project'] = self.get_object().project
         return context
+
+    def perform_update(self, serializer):
+        task = serializer.save()
+        notify_users(
+            recipients=[task.project.owner, task.created_by, task.assigned_to],
+            sender=self.request.user,
+            notification_type=Notification.Type.TASK_UPDATED,
+            message=f'Task "{task.title}" was updated.',
+            project=task.project,
+            task=task,
+        )
 
 
 class TaskStatusView(generics.UpdateAPIView):
@@ -104,7 +129,17 @@ class TaskStatusView(generics.UpdateAPIView):
                 raise PermissionDenied(
                     'Only project managers or the assigned user can change status.'
                 )
-        serializer.save()
+        previous_status = task.status
+        task = serializer.save()
+        if previous_status != task.status:
+            notify_users(
+                recipients=[task.project.owner, task.created_by, task.assigned_to],
+                sender=self.request.user,
+                notification_type=Notification.Type.TASK_STATUS_CHANGED,
+                message=f'Task "{task.title}" moved to {task.get_status_display()}.',
+                project=task.project,
+                task=task,
+            )
 
 
 class TaskAssignmentView(generics.UpdateAPIView):
@@ -118,7 +153,15 @@ class TaskAssignmentView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         if not can_manage_tasks(serializer.instance.project, self.request.user):
             raise PermissionDenied('Only project owners and managers can assign tasks.')
-        serializer.save()
+        task = serializer.save()
+        notify_user(
+            recipient=task.assigned_to,
+            sender=self.request.user,
+            notification_type=Notification.Type.TASK_ASSIGNED,
+            message=f'You were assigned task "{task.title}".',
+            project=task.project,
+            task=task,
+        )
 
 
 class TaskPositionView(generics.UpdateAPIView):
