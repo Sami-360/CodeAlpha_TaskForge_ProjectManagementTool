@@ -139,6 +139,9 @@
       const holder = document.getElementById('topbar-avatar');
       if (holder) holder.replaceWith(avatar(user, 'avatar'));
       loadNotifications();
+      TaskForgeRealtime.connect('/notifications/', (event) => {
+        if (event.type === 'notification_created') loadNotifications();
+      });
       return user;
     } catch (error) {
       TaskForgeAPI.clearTokens();

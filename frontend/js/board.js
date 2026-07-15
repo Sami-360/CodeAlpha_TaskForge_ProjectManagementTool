@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let project;
   let members = [];
   let tasks = [];
+  let realtimeReload;
 
   const canManage = () => ['owner', 'manager'].includes(project.current_user_role);
   const canChangeStatus = (task) => canManage() || task.assigned_to?.id === currentUser.id;
@@ -268,4 +269,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('manage-members').addEventListener('click', membersModal);
   ['priority-filter', 'assignee-filter', 'overdue-filter'].forEach((id) => document.getElementById(id).addEventListener('change', renderBoard));
   await loadData();
+  TaskForgeRealtime.connect(`/projects/${projectId}/board/`, (event) => {
+    if (!['task_created', 'task_updated', 'task_deleted', 'task_status_changed', 'comment_created', 'member_added'].includes(event.type)) return;
+    clearTimeout(realtimeReload);
+    realtimeReload = setTimeout(() => {
+      if (event.type === 'member_added') loadData();
+      else reloadTasks().catch((error) => toast(error.message, 'error'));
+    }, 120);
+  });
 });
