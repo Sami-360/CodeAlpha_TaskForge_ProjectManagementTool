@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/health/', health_check, name='api-health'),
     path('api/auth/', include('accounts.urls')),
     path('api/projects/', include('projects.urls')),
+    path('api/', include('tasks.urls')),
 ]
 
 if settings.DEBUG:
