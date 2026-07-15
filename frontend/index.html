@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskForge</title>
+  <script>
+    const destination = localStorage.getItem('taskforge_refresh')
+      ? 'pages/dashboard.html'
+      : 'pages/login.html';
+    window.location.replace(destination);
+  </script>
+</head>
+<body></body>
+</html>

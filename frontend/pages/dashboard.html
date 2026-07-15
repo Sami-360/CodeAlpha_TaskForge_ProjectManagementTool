@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard | TaskForge</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script defer src="../js/config.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/common.js"></script>
+  <script defer src="../js/dashboard.js"></script>
+</head>
+<body class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="brand" href="dashboard.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+    <nav class="nav-list" aria-label="Main navigation">
+      <a class="nav-link" data-nav="dashboard" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
+      <a class="nav-link" data-nav="profile" href="profile.html">Profile</a>
+    </nav>
+    <div class="sidebar-foot"><button id="logout-button" class="btn btn-quiet" type="button">Sign out</button></div>
+  </aside>
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:10px"><button id="mobile-menu" class="icon-btn mobile-menu" type="button" aria-label="Open navigation" title="Menu">&#9776;</button><h1>Dashboard</h1></div>
+    <div class="topbar-actions">
+      <button id="notification-button" class="icon-btn" type="button" aria-label="Notifications" title="Notifications">&#128276;<span id="notification-count" class="notification-count hidden">0</span></button>
+      <div class="user-chip"><span id="topbar-avatar" class="avatar">U</span><span data-user-name>User</span></div>
+    </div>
+  </header>
+  <main class="page">
+    <div class="page-heading"><div><h2>Workspace overview</h2><p>Your projects, assignments, and recent activity.</p></div><a class="btn btn-primary" href="projects.html?action=create">Create project</a></div>
+    <section id="stats" class="grid stat-grid" aria-label="Workspace statistics"><div class="loading">Loading statistics...</div></section>
+    <div class="grid dashboard-grid">
+      <section class="panel"><header class="panel-header"><h3>Recent projects</h3><a href="projects.html">View all</a></header><div id="recent-projects" class="panel-body"><div class="loading">Loading projects...</div></div></section>
+      <section class="panel"><header class="panel-header"><h3>Assigned to me</h3></header><div id="recent-tasks" class="panel-body"><div class="loading">Loading tasks...</div></div></section>
+    </div>
+  </main>
+  <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+</body>
+</html>

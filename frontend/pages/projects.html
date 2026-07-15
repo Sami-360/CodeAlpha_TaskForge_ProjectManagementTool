@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects | TaskForge</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script defer src="../js/config.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/common.js"></script>
+  <script defer src="../js/projects.js"></script>
+</head>
+<body class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="brand" href="dashboard.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+    <nav class="nav-list" aria-label="Main navigation">
+      <a class="nav-link" data-nav="dashboard" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
+      <a class="nav-link" data-nav="profile" href="profile.html">Profile</a>
+    </nav>
+    <div class="sidebar-foot"><button id="logout-button" class="btn btn-quiet" type="button">Sign out</button></div>
+  </aside>
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:10px"><button id="mobile-menu" class="icon-btn mobile-menu" type="button" aria-label="Open navigation" title="Menu">&#9776;</button><h1>Projects</h1></div>
+    <div class="topbar-actions">
+      <button id="notification-button" class="icon-btn" type="button" aria-label="Notifications" title="Notifications">&#128276;<span id="notification-count" class="notification-count hidden">0</span></button>
+      <div class="user-chip"><span id="topbar-avatar" class="avatar">U</span><span data-user-name>User</span></div>
+    </div>
+  </header>
+  <main class="page">
+    <div class="page-heading"><div><h2>Projects</h2><p>Workspaces you own or share with your team.</p></div><button id="create-project" class="btn btn-primary" type="button">Create project</button></div>
+    <div class="filter-bar"><label class="visually-hidden" for="project-search">Search projects</label><input id="project-search" type="search" placeholder="Search projects"><label class="visually-hidden" for="role-filter">Filter by role</label><select id="role-filter"><option value="">All roles</option><option value="owner">Owner</option><option value="manager">Manager</option><option value="member">Member</option></select></div>
+    <section id="project-list" class="grid cards-grid"><div class="loading">Loading projects...</div></section>
+  </main>
+  <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+</body>
+</html>

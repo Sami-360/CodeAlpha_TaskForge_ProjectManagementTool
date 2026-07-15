@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project board | TaskForge</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script defer src="../js/config.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/common.js"></script>
+  <script defer src="../js/board.js"></script>
+</head>
+<body class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="brand" href="dashboard.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+    <nav class="nav-list" aria-label="Main navigation">
+      <a class="nav-link" data-nav="dashboard" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
+      <a class="nav-link" data-nav="profile" href="profile.html">Profile</a>
+    </nav>
+    <div class="sidebar-foot"><button id="logout-button" class="btn btn-quiet" type="button">Sign out</button></div>
+  </aside>
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:10px"><button id="mobile-menu" class="icon-btn mobile-menu" type="button" aria-label="Open navigation" title="Menu">&#9776;</button><h1>Project board</h1></div>
+    <div class="topbar-actions">
+      <button id="notification-button" class="icon-btn" type="button" aria-label="Notifications" title="Notifications">&#128276;<span id="notification-count" class="notification-count hidden">0</span></button>
+      <div class="user-chip"><span id="topbar-avatar" class="avatar">U</span><span data-user-name>User</span></div>
+    </div>
+  </header>
+  <main class="page">
+    <div class="page-heading"><div><a href="projects.html">&larr; Projects</a><h2 id="project-name">Project board</h2><p id="project-description">Loading project...</p></div><div id="board-actions" class="board-toolbar"><button id="manage-members" class="btn btn-secondary hidden" type="button">Members</button><button id="create-task" class="btn btn-primary hidden" type="button">Create task</button></div></div>
+    <div class="filter-bar"><select id="priority-filter" aria-label="Priority filter"><option value="">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><select id="assignee-filter" aria-label="Assignee filter"><option value="">All assignees</option></select><select id="overdue-filter" aria-label="Overdue filter"><option value="">Any due date</option><option value="true">Overdue</option><option value="false">Not overdue</option></select></div>
+    <section id="board" class="board" aria-label="Kanban board"></section>
+  </main>
+  <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+</body>
+</html>

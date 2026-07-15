@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Task details | TaskForge</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script defer src="../js/config.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/common.js"></script>
+  <script defer src="../js/task-details.js"></script>
+</head>
+<body class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="brand" href="dashboard.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+    <nav class="nav-list" aria-label="Main navigation">
+      <a class="nav-link" data-nav="dashboard" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
+      <a class="nav-link" data-nav="profile" href="profile.html">Profile</a>
+    </nav>
+    <div class="sidebar-foot"><button id="logout-button" class="btn btn-quiet" type="button">Sign out</button></div>
+  </aside>
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:10px"><button id="mobile-menu" class="icon-btn mobile-menu" type="button" aria-label="Open navigation" title="Menu">&#9776;</button><h1>Task details</h1></div>
+    <div class="topbar-actions">
+      <button id="notification-button" class="icon-btn" type="button" aria-label="Notifications" title="Notifications">&#128276;<span id="notification-count" class="notification-count hidden">0</span></button>
+      <div class="user-chip"><span id="topbar-avatar" class="avatar">U</span><span data-user-name>User</span></div>
+    </div>
+  </header>
+  <main class="page">
+    <div class="page-heading"><div><a id="back-to-board" href="projects.html">&larr; Project board</a><h2 id="task-title">Task details</h2><p id="task-project">Loading task...</p></div><div id="task-actions" class="board-toolbar"></div></div>
+    <div class="grid task-layout">
+      <section id="task-detail" class="panel"><div class="loading">Loading task...</div></section>
+      <section class="panel"><header class="panel-header"><h3>Comments</h3></header><div class="panel-body"><form id="comment-form" class="form-grid"><div class="field"><label for="comment-message">Add comment</label><textarea id="comment-message" maxlength="2000" required></textarea></div><button class="btn btn-primary" type="submit">Post comment</button></form><div id="comment-list" class="comment-list" style="margin-top:18px"></div></div></section>
+    </div>
+  </main>
+  <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+</body>
+</html>

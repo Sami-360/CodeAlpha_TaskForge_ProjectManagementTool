@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profile | TaskForge</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/app.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script defer src="../js/config.js"></script>
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/common.js"></script>
+  <script defer src="../js/profile.js"></script>
+</head>
+<body class="app-shell">
+  <aside id="sidebar" class="sidebar">
+    <a class="brand" href="dashboard.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+    <nav class="nav-list" aria-label="Main navigation">
+      <a class="nav-link" data-nav="dashboard" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
+      <a class="nav-link" data-nav="profile" href="profile.html">Profile</a>
+    </nav>
+    <div class="sidebar-foot"><button id="logout-button" class="btn btn-quiet" type="button">Sign out</button></div>
+  </aside>
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:10px"><button id="mobile-menu" class="icon-btn mobile-menu" type="button" aria-label="Open navigation" title="Menu">&#9776;</button><h1>Profile</h1></div>
+    <div class="topbar-actions">
+      <button id="notification-button" class="icon-btn" type="button" aria-label="Notifications" title="Notifications">&#128276;<span id="notification-count" class="notification-count hidden">0</span></button>
+      <div class="user-chip"><span id="topbar-avatar" class="avatar">U</span><span data-user-name>User</span></div>
+    </div>
+  </header>
+  <main class="page">
+    <div class="page-heading"><div><h2>Your profile</h2><p>Personal details visible to collaborators.</p></div></div>
+    <div class="grid profile-layout">
+      <section id="profile-summary" class="panel profile-summary"><div class="loading">Loading profile...</div></section>
+      <section class="panel"><header class="panel-header"><h3>Edit profile</h3></header><div class="panel-body"><form id="profile-form" class="form-grid"><div class="form-row"><div class="field"><label for="first_name">First name</label><input id="first_name" name="first_name"></div><div class="field"><label for="last_name">Last name</label><input id="last_name" name="last_name"></div></div><div class="field"><label for="bio">Bio</label><textarea id="bio" name="bio" maxlength="300"></textarea></div><div class="field"><label for="avatar">Avatar</label><input id="avatar" name="avatar" type="file" accept="image/*"></div><div class="form-actions"><button class="btn btn-primary" type="submit">Save profile</button></div></form></div></section>
+    </div>
+  </main>
+  <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+</body>
+</html>
