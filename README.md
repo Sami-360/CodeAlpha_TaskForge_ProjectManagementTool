@@ -332,20 +332,43 @@ or reset the live `taskforge` data.
 
 Review screenshots are stored in `docs/screenshots/`:
 
-- `login-desktop.png`: desktop authentication and board preview
-- `login-mobile.png`: responsive authentication layout
-- `profile-page.png`: enhanced profile avatar, statistics, and edit controls
-- `taskforge-admin.png`: real locally branded Django admin login
+The workspace captures below use the existing Ali Khan review account and real project data.
 
-![TaskForge desktop login](docs/screenshots/login-desktop.png)
+### Workspace
 
-![TaskForge responsive login](docs/screenshots/login-mobile.png)
+![Ali Khan dashboard insights](docs/screenshots/dashboard-insights.png)
 
-![TaskForge profile](docs/screenshots/profile-page.png)
+![Ali Khan projects](docs/screenshots/projects-page.png)
 
-![TaskForge administration](docs/screenshots/taskforge-admin.png)
+![TaskForge project board](docs/screenshots/project-board.png)
 
-The running application also provides dashboard, projects, Kanban board, task details, comments, notifications, and profile views after login.
+![TaskForge task details](docs/screenshots/task-details.png)
+
+![Ali Khan profile](docs/screenshots/profile-page.png)
+
+![TaskForge project activity](docs/screenshots/activity-view.png)
+
+![TaskForge notifications](docs/screenshots/notifications-panel.png)
+
+### Responsive Navigation
+
+![TaskForge collapsed desktop sidebar](docs/screenshots/collapsed-sidebar.png)
+
+![TaskForge mobile sidebar](docs/screenshots/mobile-sidebar.png)
+
+### Administration
+
+The administration captures use the existing Sami administrator account. Password details are excluded from the profile capture.
+
+![TaskForge admin dashboard](docs/screenshots/admin-dashboard.png)
+
+![TaskForge admin users](docs/screenshots/admin-users.png)
+
+![Sami admin profile](docs/screenshots/admin-sami-profile.png)
+
+![TaskForge admin projects](docs/screenshots/admin-projects.png)
+
+![TaskForge admin tasks](docs/screenshots/admin-tasks.png)
 
 ## 21. Git Workflow
 
