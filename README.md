@@ -289,7 +289,7 @@ Latest full verification:
 
 ```text
 Found 71 test(s).
-Ran 71 tests in 381.658s
+Ran 71 tests in 533.351s
 OK
 System check identified no issues (0 silenced).
 ```
@@ -367,6 +367,8 @@ No separate open-source license is included. The source remains under the author
 ## Professional Enhancements
 
 TaskForge additionally includes validated UUID-based profile avatars, persistent collapsible navigation, accessible mobile drawer behavior, locally branded Django admin, protected task attachments, task checklists, project labels, activity history, advanced search/filters, consistent due states, complete/reopen actions, dashboard insights, and repeat-safe due notifications.
+
+The application shell uses the TaskForge teal, graphite, and neutral palette across the frontend and Django admin. Both interfaces include responsive side navigation, keyboard-visible focus states, active-page indicators, compact management panels, and real permission-aware navigation links.
 
 Upload limits:
 

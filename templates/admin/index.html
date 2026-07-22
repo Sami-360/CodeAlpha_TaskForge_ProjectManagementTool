@@ -1,0 +1,45 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static log %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">{% endblock %}
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}{{ block.super }} dashboard taskforge-dashboard{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content_title %}
+<div class="taskforge-admin-heading">
+  <div>
+    <span class="taskforge-eyebrow">Control panel</span>
+    <h1>Workspace overview</h1>
+  </div>
+  <a class="taskforge-view-site" href="{% url 'api-health' %}">API health</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main" class="app-list taskforge-app-list">
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+  <div class="module" id="recent-actions-module">
+    <h2>{% translate 'Recent activity' %}</h2>
+    <h3>{% translate 'Your latest changes' %}</h3>
+    {% get_admin_log 8 as admin_log for_user user %}
+    {% if not admin_log %}
+      <p class="taskforge-empty">{% translate 'No recent changes.' %}</p>
+    {% else %}
+      <ul class="actionlist">
+        {% for entry in admin_log %}
+          <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+            {% if entry.is_deletion or not entry.get_admin_url %}{{ entry.object_repr }}{% else %}<a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>{% endif %}
+            {% if entry.content_type %}<span class="mini quiet">{{ entry.content_type.name|capfirst }}</span>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

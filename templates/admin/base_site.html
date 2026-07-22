@@ -13,5 +13,10 @@
 {% endblock %}
 
 {% block welcome-msg %}
-<span class="taskforge-welcome">Manage projects, people, tasks, and collaboration data.</span>
+<span class="taskforge-welcome"><strong>{% firstof user.get_short_name user.get_username %}</strong><small>Administrator</small></span>
+{% endblock %}
+
+{% block extrabody %}
+{{ block.super }}
+<script src="{% static 'admin/js/taskforge_admin.js' %}"></script>
 {% endblock %}

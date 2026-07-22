@@ -118,7 +118,9 @@
       return null;
     }
     TaskForgeSidebar.init();
-    document.querySelector(`[data-nav="${activePage}"]`)?.classList.add('active');
+    const activeLink = document.querySelector(`[data-nav="${activePage}"]`);
+    activeLink?.classList.add('active');
+    activeLink?.setAttribute('aria-current', 'page');
     document.getElementById('logout-button')?.addEventListener('click', () => {
       TaskForgeAPI.clearTokens();
       window.location.replace(TaskForgeConfig.loginPage);

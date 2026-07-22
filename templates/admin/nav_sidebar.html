@@ -1,0 +1,36 @@
+{% load i18n %}
+<button class="sticky toggle-nav-sidebar" id="toggle-nav-sidebar" aria-label="{% translate 'Toggle navigation' %}"></button>
+<nav class="sticky" id="nav-sidebar" aria-label="{% translate 'Administration navigation' %}">
+  <a class="admin-home-link{% if request.path == '/admin/' %} current{% endif %}" href="{% url 'admin:index' %}">
+    <span class="admin-nav-icon" aria-hidden="true">space_dashboard</span>
+    <span>Overview</span>
+  </a>
+  <label class="admin-filter-label" for="nav-filter">Find a section</label>
+  <input type="search" id="nav-filter" placeholder="Search menu" aria-label="{% translate 'Filter navigation items' %}">
+  <div class="admin-nav-groups">
+    {% if available_apps %}
+      {% for app in available_apps %}
+        <section class="admin-nav-group app-{{ app.app_label }}{% if app.app_url in request.path|urlencode %} current-app{% endif %}">
+          <h2>{{ app.name }}</h2>
+          {% for model in app.models %}
+            {% with model_name=model.object_name|lower %}
+              <div class="admin-model-link model-{{ model_name }}{% if model.admin_url in request.path|urlencode %} current-model{% endif %}">
+                {% if model.admin_url %}
+                  <a href="{{ model.admin_url }}"{% if model.admin_url in request.path|urlencode %} aria-current="page"{% endif %}>
+                    <span class="admin-nav-icon" aria-hidden="true">{% if model_name == 'user' or model_name == 'group' %}group{% elif 'project' in model_name %}folder_open{% elif 'task' in model_name or 'checklist' in model_name %}task_alt{% elif 'comment' in model_name %}chat_bubble{% elif 'notification' in model_name %}notifications{% else %}database{% endif %}</span>
+                    <span>{{ model.name }}</span>
+                  </a>
+                {% else %}
+                  <span>{{ model.name }}</span>
+                {% endif %}
+                {% if model.add_url %}<a class="admin-add-link" href="{{ model.add_url }}" aria-label="Add {{ model.name }}" title="Add {{ model.name }}">+</a>{% endif %}
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </section>
+      {% endfor %}
+    {% else %}
+      <p class="admin-no-permission">{% translate "You don't have permission to view or edit anything." %}</p>
+    {% endif %}
+  </div>
+</nav>

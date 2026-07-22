@@ -13,7 +13,8 @@
   .sidebar, .sidebar-collapsed .sidebar { width: var(--sidebar-width); }
   .sidebar.open { transform: translateX(0); }
   .sidebar-toggle { display: none; }
-  .sidebar-collapsed .brand-name, .sidebar-collapsed .nav-label, .sidebar-collapsed .sidebar-user-details, .sidebar-collapsed #logout-button { display: initial; }
+  .sidebar-collapsed .brand-copy, .sidebar-collapsed .nav-label, .sidebar-collapsed .nav-section-label, .sidebar-collapsed .sidebar-user-details { display: initial; }
+  .sidebar-collapsed #logout-button { display: flex; }
   .sidebar-collapsed .brand, .sidebar-collapsed .nav-link, .sidebar-collapsed .sidebar-user { justify-content: flex-start; }
   .mobile-menu { display: inline-grid; }
   .topbar { padding: 0 14px; }

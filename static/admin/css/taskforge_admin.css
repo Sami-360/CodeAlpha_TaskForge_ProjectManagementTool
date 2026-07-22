@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0,0');
+
 :root {
   --primary: #087f6b;
   --secondary: #202a33;
@@ -6,14 +8,101 @@
   --breadcrumbs-bg: #2d3943;
   --link-fg: #087f6b;
   --link-hover-color: #066b5b;
+  --body-bg: #f6f8fb;
+  --body-fg: #132332;
+  --border-color: #d9e2e7;
+  --hairline-color: #e4eaee;
+  --selected-bg: #edf7f4;
+  --selected-row: #f4faf8;
 }
 
-#header { background: var(--secondary); }
+body { font-family: Inter, "Segoe UI", sans-serif; letter-spacing: 0; }
+#container { min-width: 0; }
+#header { min-height: 68px; padding: 10px 24px; background: var(--secondary); border-bottom: 1px solid #394852; box-shadow: 0 3px 14px rgba(16, 29, 39, .14); }
+#branding { min-width: 250px; }
+#site-name { font-size: 18px; }
 #site-name a { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 700; }
-.taskforge-mark { display: inline-grid; width: 32px; height: 32px; place-items: center; border-radius: 6px; background: var(--accent); color: #075f50; font-size: 13px; }
-.taskforge-welcome { color: #dce4e8; }
-div.breadcrumbs { background: var(--breadcrumbs-bg); }
-.module h2, .module caption, .inline-group h2 { background: var(--primary); }
-.button, input[type="submit"], input[type="button"], .submit-row input, a.button { background: var(--primary); border-radius: 5px; }
-.button:hover, input[type="submit"]:hover, input[type="button"]:hover { background: #066b5b; }
-#content h1 { font-weight: 650; }
+.taskforge-mark { display: inline-grid; width: 36px; height: 36px; place-items: center; border-radius: 6px; background: var(--accent); color: #075f50; font-size: 13px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
+.taskforge-welcome { display: inline-grid; gap: 1px; margin-right: 14px; color: #fff; text-align: left; vertical-align: middle; }
+.taskforge-welcome strong { font-size: 12px; }
+.taskforge-welcome small { color: #aebdc6; font-size: 10px; }
+#user-tools { display: flex; align-items: center; gap: 8px; color: #b9c7cf; }
+#user-tools a, #logout-form button { padding: 6px 8px; border-radius: 5px; color: #dce5e9; text-decoration: none; }
+#user-tools a:hover, #logout-form button:hover { background: #35434d; color: #fff; }
+div.breadcrumbs { padding: 11px 24px; background: #35434d; color: #b9c8cf; }
+div.breadcrumbs a { color: #e8f0f3; }
+
+.main > .content { padding: 28px; }
+#content { max-width: 1500px; }
+#content h1 { color: #132332; font-size: 24px; font-weight: 700; }
+#content h2 { font-weight: 650; }
+
+.toggle-nav-sidebar { width: 24px; border: 0; border-right: 1px solid #42515b; background-color: #202a33; }
+.toggle-nav-sidebar::before { filter: invert(1); opacity: .8; }
+#nav-sidebar { flex: 0 0 252px; width: 252px; padding: 18px 12px 28px; overflow-x: hidden; background: #202a33; border-right: 1px solid #3b4953; color: #d4dee3; }
+#nav-sidebar .admin-home-link { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 10px 11px; border: 1px solid transparent; border-radius: 6px; color: #d5dfe4; font-weight: 650; text-decoration: none; }
+#nav-sidebar .admin-home-link:hover, #nav-sidebar .admin-home-link.current { background: #344852; border-color: #49606b; color: #fff; box-shadow: inset 3px 0 #73d9ba; }
+.admin-filter-label { display: block; margin: 0 4px 6px; color: #8fa1ab; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+#nav-filter { width: 100%; margin: 0 0 18px; padding: 9px 10px; border: 1px solid #465660; border-radius: 6px; background: #18232b; color: #fff; }
+#nav-filter:focus { border-color: #73d9ba; box-shadow: 0 0 0 3px rgba(115,217,186,.14); outline: 0; }
+#nav-filter::placeholder { color: #8597a1; }
+.admin-nav-groups { display: grid; gap: 16px; }
+.admin-nav-group h2 { margin: 0 0 5px; padding: 0 9px; color: #8496a0; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.admin-model-link { display: flex; align-items: center; gap: 3px; border-radius: 6px; }
+.admin-model-link > a:first-child { display: flex; flex: 1; align-items: center; gap: 9px; min-width: 0; padding: 8px 9px; border: 1px solid transparent; border-radius: 6px; color: #cbd7dd; font-weight: 600; text-decoration: none; }
+.admin-model-link > a:first-child span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-model-link:hover > a:first-child { background: #2e3c46; color: #fff; }
+.admin-model-link.current-model > a:first-child { background: #344852; border-color: #49606b; color: #fff; box-shadow: inset 3px 0 #73d9ba; }
+.admin-model-link[hidden], .admin-nav-group[hidden] { display: none; }
+.admin-nav-icon { font-family: "Material Symbols Outlined"; font-size: 18px; font-weight: normal; line-height: 1; }
+.admin-add-link { display: grid; flex: 0 0 27px; height: 27px; place-items: center; border-radius: 5px; color: #8de0c7; font-size: 18px; text-decoration: none; }
+.admin-add-link:hover { background: #3b4a54; color: #fff; }
+.admin-no-permission { padding: 10px; color: #bdc8ce; }
+
+.module, #changelist-filter, .submit-row { overflow: hidden; border: 1px solid #d9e2e7; border-radius: 7px; background: #fff; box-shadow: 0 4px 14px rgba(22,39,52,.06); }
+.module h2, .module caption, .inline-group h2 { padding: 11px 14px; background: #edf3f5; color: #263a48; font-weight: 700; }
+.module caption a.section { color: #263a48; }
+.module table th, .module table td { padding: 11px 12px; }
+.module table tr:hover { background: #f6faf9; }
+.button, input[type="submit"], input[type="button"], .submit-row input, a.button { min-height: 34px; padding: 8px 13px; background: var(--primary); border-radius: 5px; font-weight: 650; }
+.button:hover, input[type="submit"]:hover, input[type="button"]:hover, a.button:hover { background: #066b5b; }
+.object-tools a { border-radius: 5px; background: var(--primary); box-shadow: 0 4px 12px rgba(8,127,107,.16); }
+.object-tools a:hover { background: #066b5b; }
+#changelist .actions { padding: 10px 12px; border: 1px solid #d9e2e7; border-radius: 6px 6px 0 0; background: #f7f9fa; }
+#changelist table { border: 1px solid #d9e2e7; }
+#changelist table thead th { padding: 11px 10px; background: #edf3f5; color: #314652; }
+#changelist table tbody tr:hover { background: #f1f8f6; }
+#changelist-filter h2 { background: #263640; color: #fff; }
+#toolbar { border: 1px solid #d9e2e7; border-radius: 6px; background: #fff; }
+#toolbar form input[type="submit"] { margin-left: 6px; }
+input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="number"], textarea, select { border: 1px solid #cbd6dc; border-radius: 5px; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(8,127,107,.12); outline: 0; }
+
+.taskforge-admin-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.taskforge-admin-heading h1 { margin: 3px 0 0; }
+.taskforge-eyebrow { color: #60717e; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.taskforge-view-site { padding: 9px 13px; border: 1px solid #c9d5db; border-radius: 5px; background: #fff; color: #314652; font-weight: 650; text-decoration: none; }
+.taskforge-view-site:hover { border-color: var(--primary); color: var(--primary); }
+.taskforge-dashboard #content-main { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.taskforge-dashboard #content-main .module { margin: 0; }
+.taskforge-dashboard #content-related { width: 310px; margin-right: -330px; }
+#recent-actions-module h3 { padding: 10px 14px; color: #60717e; font-size: 11px; text-transform: uppercase; }
+#recent-actions-module .actionlist li { padding: 11px 14px; }
+#recent-actions-module .actionlist .mini { display: block; margin-top: 3px; }
+.taskforge-empty { padding: 18px; color: #60717e; }
+
+@media (max-width: 1024px) {
+  .taskforge-dashboard #content-main { grid-template-columns: 1fr; }
+  .taskforge-dashboard #content-related { width: auto; margin: 20px 0 0; }
+}
+
+@media (max-width: 767px) {
+  #header { padding: 10px 14px; }
+  #branding { min-width: 0; }
+  #site-name a { font-size: 0; }
+  #site-name a .taskforge-mark { font-size: 13px; }
+  .taskforge-welcome { display: none; }
+  .main > .content { padding: 18px 14px; }
+  .taskforge-admin-heading { align-items: stretch; flex-direction: column; }
+  .taskforge-view-site { text-align: center; }
+}

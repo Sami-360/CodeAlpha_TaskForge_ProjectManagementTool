@@ -32,17 +32,44 @@
   }
 
   function decorateNavigation() {
-    const icons = { dashboard: 'D', projects: 'P', profile: 'U' };
+    const icons = { dashboard: 'space_dashboard', projects: 'folder_open', profile: 'person' };
+    const navigation = sidebar.querySelector('.nav-list');
+    if (navigation && !navigation.querySelector('.nav-section-label')) {
+      navigation.prepend(Object.assign(document.createElement('span'), {
+        className: 'nav-section-label',
+        textContent: 'Workspace',
+      }));
+    }
     document.querySelectorAll('.nav-link[data-nav]').forEach((link) => {
       if (link.querySelector('.nav-icon')) return;
       const label = link.textContent.trim();
       link.replaceChildren(
-        Object.assign(document.createElement('span'), { className: 'nav-icon', textContent: icons[link.dataset.nav] || '-' }),
+        Object.assign(document.createElement('span'), {
+          className: 'nav-icon material-symbols-outlined',
+          textContent: icons[link.dataset.nav] || 'circle',
+          ariaHidden: 'true',
+        }),
         Object.assign(document.createElement('span'), { className: 'nav-label', textContent: label }),
       );
       link.title = label;
       link.addEventListener('click', () => { if (isMobile()) closeMobile(); });
     });
+    if (navigation && !navigation.querySelector('.sidebar-quick-action')) {
+      const action = document.createElement('a');
+      action.className = 'sidebar-quick-action';
+      action.href = 'projects.html?action=create';
+      action.title = 'Create project';
+      const actionIcon = document.createElement('span');
+      actionIcon.className = 'nav-icon material-symbols-outlined';
+      actionIcon.textContent = 'add';
+      actionIcon.setAttribute('aria-hidden', 'true');
+      const actionLabel = document.createElement('span');
+      actionLabel.className = 'nav-label';
+      actionLabel.textContent = 'New project';
+      action.append(actionIcon, actionLabel);
+      action.addEventListener('click', () => { if (isMobile()) closeMobile(); });
+      navigation.append(action);
+    }
   }
 
   function init() {
@@ -50,6 +77,31 @@
     if (!sidebar || sidebar.dataset.enhanced === 'true') return;
     sidebar.dataset.enhanced = 'true';
     decorateNavigation();
+
+    const brandName = sidebar.querySelector('.brand-name');
+    if (brandName && !sidebar.querySelector('.brand-copy')) {
+      const copy = document.createElement('span');
+      copy.className = 'brand-copy';
+      const title = document.createElement('strong');
+      title.className = 'brand-name';
+      title.textContent = brandName.textContent;
+      const caption = document.createElement('small');
+      caption.textContent = 'Project workspace';
+      copy.append(title, caption);
+      brandName.replaceWith(copy);
+    }
+
+    const logout = document.getElementById('logout-button');
+    if (logout && !logout.querySelector('.material-symbols-outlined')) {
+      const icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined';
+      icon.textContent = 'logout';
+      icon.setAttribute('aria-hidden', 'true');
+      const label = document.createElement('span');
+      label.className = 'nav-label';
+      label.textContent = logout.textContent.trim();
+      logout.replaceChildren(icon, label);
+    }
 
     overlay = document.createElement('button');
     overlay.type = 'button';
