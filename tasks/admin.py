@@ -1,5 +1,6 @@
-from django.contrib import admin
+from pathlib import Path
 
+from django.contrib import admin
 from django.utils import timezone
 
 from tasks.models import ChecklistItem, Task, TaskAttachment, TaskChecklist
@@ -35,6 +36,13 @@ class TaskAttachmentAdmin(admin.ModelAdmin):
     search_fields = ['original_name', 'task__title', 'uploaded_by__username']
     list_filter = ['uploaded_at']
     readonly_fields = ['original_name', 'file_size', 'uploaded_at']
+
+    def save_model(self, request, obj, form, change):
+        upload = form.cleaned_data.get('file')
+        if upload:
+            obj.original_name = Path(upload.name).name
+            obj.file_size = upload.size
+        super().save_model(request, obj, form, change)
 
 
 @admin.register(TaskChecklist)

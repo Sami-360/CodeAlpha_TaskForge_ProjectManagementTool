@@ -230,3 +230,23 @@ class EnhancementTests(TestCase):
         self.assertContains(response, 'admin-nav-groups')
         self.assertContains(response, 'admin-model-link', count=12)
         self.assertNotContains(response, 'toggle-nav-sidebar')
+
+    def test_admin_attachment_upload_populates_required_metadata(self):
+        self.owner.is_staff = True
+        self.owner.is_superuser = True
+        self.owner.save(update_fields=['is_staff', 'is_superuser'])
+        self.client.force_login(self.owner)
+        upload = SimpleUploadedFile(
+            'admin-notes.txt',
+            b'Admin attachment content',
+            content_type='text/plain',
+        )
+
+        response = self.client.post(
+            '/admin/tasks/taskattachment/add/',
+            {'task': self.task.pk, 'uploaded_by': self.owner.pk, 'file': upload},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        attachment = TaskAttachment.objects.get(original_name='admin-notes.txt')
+        self.assertEqual(attachment.file_size, 24)

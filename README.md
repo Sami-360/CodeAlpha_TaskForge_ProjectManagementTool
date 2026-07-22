@@ -288,8 +288,8 @@ Manual flows are tracked in `docs/testing-checklist.md`.
 Latest full verification:
 
 ```text
-Found 72 test(s).
-Ran 72 tests in 473.380s
+Found 73 test(s).
+Ran 73 tests in 405.010s
 OK
 System check identified no issues (0 silenced).
 ```
