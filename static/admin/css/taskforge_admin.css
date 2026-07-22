@@ -1,0 +1,19 @@
+:root {
+  --primary: #087f6b;
+  --secondary: #202a33;
+  --accent: #d6f5eb;
+  --header-color: #ffffff;
+  --breadcrumbs-bg: #2d3943;
+  --link-fg: #087f6b;
+  --link-hover-color: #066b5b;
+}
+
+#header { background: var(--secondary); }
+#site-name a { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 700; }
+.taskforge-mark { display: inline-grid; width: 32px; height: 32px; place-items: center; border-radius: 6px; background: var(--accent); color: #075f50; font-size: 13px; }
+.taskforge-welcome { color: #dce4e8; }
+div.breadcrumbs { background: var(--breadcrumbs-bg); }
+.module h2, .module caption, .inline-group h2 { background: var(--primary); }
+.button, input[type="submit"], input[type="button"], .submit-row input, a.button { background: var(--primary); border-radius: 5px; }
+.button:hover, input[type="submit"]:hover, input[type="button"]:hover { background: #066b5b; }
+#content h1 { font-weight: 650; }

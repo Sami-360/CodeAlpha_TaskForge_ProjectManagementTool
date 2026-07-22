@@ -42,3 +42,14 @@ class CurrentUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class CurrentUserAvatarView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request):
+        request.user.remove_avatar()
+        return Response(
+            UserProfileSerializer(request.user, context={'request': request}).data,
+            status=status.HTTP_200_OK,
+        )

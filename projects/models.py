@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -91,6 +92,81 @@ class ProjectMember(models.Model):
 
     def __str__(self):
         return f'{self.user.username} in {self.project.name} ({self.role})'
+
+
+class ProjectLabel(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='labels')
+    name = models.CharField(max_length=50)
+    color = models.CharField(max_length=7)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name='created_project_labels',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(
+                Lower('name'),
+                'project',
+                name='projects_unique_label_name_ci',
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.project.name}: {self.name}'
+
+
+class ProjectActivity(models.Model):
+    class Action(models.TextChoices):
+        PROJECT_CREATED = 'project_created', 'Project created'
+        PROJECT_UPDATED = 'project_updated', 'Project updated'
+        MEMBER_ADDED = 'member_added', 'Member added'
+        MEMBER_REMOVED = 'member_removed', 'Member removed'
+        MEMBER_ROLE_CHANGED = 'member_role_changed', 'Member role changed'
+        TASK_CREATED = 'task_created', 'Task created'
+        TASK_ASSIGNED = 'task_assigned', 'Task assigned'
+        TASK_STATUS_CHANGED = 'task_status_changed', 'Task status changed'
+        TASK_UPDATED = 'task_updated', 'Task updated'
+        TASK_DELETED = 'task_deleted', 'Task deleted'
+        COMMENT_ADDED = 'comment_added', 'Comment added'
+        ATTACHMENT_ADDED = 'attachment_added', 'Attachment added'
+        CHECKLIST_UPDATED = 'checklist_updated', 'Checklist updated'
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='activities')
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='project_activities',
+    )
+    action = models.CharField(max_length=40, choices=Action.choices)
+    task = models.ForeignKey(
+        'tasks.Task',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='activities',
+    )
+    target_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='targeted_project_activities',
+    )
+    metadata = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [models.Index(fields=['project', '-created_at'])]
+
+    def __str__(self):
+        return f'{self.project.name}: {self.get_action_display()}'
 
 
 @receiver(post_save, sender=Project)
