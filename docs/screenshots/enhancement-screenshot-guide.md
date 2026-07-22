@@ -8,6 +8,8 @@ Release screenshots must be captured from the real running application rather th
 
 | Filename | Real UI state |
 |---|---|
+| `User-Login.png` | Desktop login form and workspace preview |
+| `user-register-page.png` | Desktop registration form and workspace preview |
 | `dashboard-insights.png` | Dashboard metrics, assignments, workload, and priorities |
 | `projects-page.png` | Searchable project listing |
 | `project-board.png` | Kanban board with real project members, labels, and tasks |

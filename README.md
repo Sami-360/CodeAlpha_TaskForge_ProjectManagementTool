@@ -334,6 +334,12 @@ Review screenshots are stored in `docs/screenshots/`:
 
 The workspace captures below use the existing Ali Khan review account and real project data.
 
+### Authentication
+
+![TaskForge user login](docs/screenshots/User-Login.png)
+
+![TaskForge user registration](docs/screenshots/user-register-page.png)
+
 ### Workspace
 
 ![Ali Khan dashboard insights](docs/screenshots/dashboard-insights.png)
