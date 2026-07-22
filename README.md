@@ -210,10 +210,10 @@ TaskForge uses one clear static-client setup (Option B). In a second PowerShell 
 ```powershell
 cd "D:\Vs Studio\CodeAlpha_ProjectManagementTool"
 .\.venv\Scripts\Activate.ps1
-python -m http.server 5500 --bind 127.0.0.1 --directory frontend
+python -m http.server 5500 --bind 127.0.0.1 --directory .
 ```
 
-Open `http://127.0.0.1:5500/`. Keep both terminal servers running. The frontend calls the API and WebSockets at `127.0.0.1:8000`.
+Open `http://127.0.0.1:5500/`. The root entry redirects to the correct page under `frontend/pages/`; do not append a second path manually. Keep both terminal servers running. The frontend calls the API and WebSockets at `127.0.0.1:8000`.
 
 ## 16. API Endpoints
 
