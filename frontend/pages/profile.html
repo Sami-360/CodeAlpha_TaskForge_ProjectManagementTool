@@ -10,6 +10,7 @@
   <script defer src="../js/config.js"></script>
   <script defer src="../js/api.js"></script>
   <script defer src="../js/realtime.js"></script>
+  <script defer src="../js/sidebar.js"></script>
   <script defer src="../js/common.js"></script>
   <script defer src="../js/profile.js"></script>
 </head>
@@ -34,7 +35,7 @@
     <div class="page-heading"><div><h2>Your profile</h2><p>Personal details visible to collaborators.</p></div></div>
     <div class="grid profile-layout">
       <section id="profile-summary" class="panel profile-summary"><div class="loading">Loading profile...</div></section>
-      <section class="panel"><header class="panel-header"><h3>Edit profile</h3></header><div class="panel-body"><form id="profile-form" class="form-grid"><div class="form-row"><div class="field"><label for="first_name">First name</label><input id="first_name" name="first_name"></div><div class="field"><label for="last_name">Last name</label><input id="last_name" name="last_name"></div></div><div class="field"><label for="bio">Bio</label><textarea id="bio" name="bio" maxlength="300"></textarea></div><div class="field"><label for="avatar">Avatar</label><input id="avatar" name="avatar" type="file" accept="image/*"></div><div class="form-actions"><button class="btn btn-primary" type="submit">Save profile</button></div></form></div></section>
+      <section class="panel"><header class="panel-header"><h3>Edit profile</h3></header><div class="panel-body"><form id="profile-form" class="form-grid"><div class="form-row"><div class="field"><label for="first_name">First name</label><input id="first_name" name="first_name"></div><div class="field"><label for="last_name">Last name</label><input id="last_name" name="last_name"></div></div><div class="field"><label for="bio">Bio</label><textarea id="bio" name="bio" maxlength="300"></textarea><div class="field-help"><span id="bio-count">0</span>/300 characters</div></div><div class="avatar-editor"><div id="avatar-preview" class="avatar-preview" aria-live="polite"></div><div class="avatar-editor-actions"><label class="btn btn-secondary" for="avatar">Change avatar</label><input id="avatar" name="avatar" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp"><button id="remove-avatar" class="btn btn-quiet danger-text" type="button">Remove avatar</button><small>JPG, PNG, or WebP. Maximum 5 MB.</small></div></div><div id="profile-error" class="field-error" role="alert"></div><div class="form-actions"><button class="btn btn-primary" type="submit">Save profile</button></div></form></div></section>
     </div>
   </main>
   <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>

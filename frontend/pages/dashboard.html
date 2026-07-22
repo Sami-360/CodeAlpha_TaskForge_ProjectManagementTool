@@ -10,6 +10,7 @@
   <script defer src="../js/config.js"></script>
   <script defer src="../js/api.js"></script>
   <script defer src="../js/realtime.js"></script>
+  <script defer src="../js/sidebar.js"></script>
   <script defer src="../js/common.js"></script>
   <script defer src="../js/dashboard.js"></script>
 </head>
@@ -37,6 +38,7 @@
       <section class="panel"><header class="panel-header"><h3>Recent projects</h3><a href="projects.html">View all</a></header><div id="recent-projects" class="panel-body"><div class="loading">Loading projects...</div></div></section>
       <section class="panel"><header class="panel-header"><h3>Assigned to me</h3></header><div id="recent-tasks" class="panel-body"><div class="loading">Loading tasks...</div></div></section>
     </div>
+    <div class="grid insights-grid"><section class="panel"><header class="panel-header"><h3>Workload by project</h3></header><div id="workload" class="panel-body insight-list"></div></section><section class="panel"><header class="panel-header"><h3>Priority distribution</h3></header><div id="priority-insight" class="panel-body insight-list"></div></section><section class="panel"><header class="panel-header"><h3>Upcoming deadlines</h3></header><div id="upcoming-deadlines" class="panel-body insight-list"></div></section><section class="panel"><header class="panel-header"><h3>Recent activity</h3></header><div id="dashboard-activity" class="panel-body insight-list"></div></section></div>
   </main>
   <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>
   <div id="toast-region" class="toast-region" aria-live="polite"></div>

@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!user) return;
   const { el, modal, toast, setLoading } = TaskForgeUI;
   let projects = [];
+  let searchTimer;
 
   function progress(project) {
     const total = project.task_stats.total;
@@ -10,12 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function render() {
-    const query = document.getElementById('project-search').value.trim().toLowerCase();
-    const role = document.getElementById('role-filter').value;
-    const filtered = projects.filter((project) =>
-      (!query || project.name.toLowerCase().includes(query))
-      && (!role || project.current_user_role === role)
-    );
+    const filtered = projects;
     const list = document.getElementById('project-list');
     list.replaceChildren();
     if (!filtered.length) {
@@ -56,7 +52,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const list = document.getElementById('project-list');
     list.replaceChildren(el('div', { className: 'loading', text: 'Loading projects...' }));
     try {
-      projects = await TaskForgeAPI.request('/projects/');
+      const params = new URLSearchParams();
+      const search = document.getElementById('project-search').value.trim();
+      const role = document.getElementById('role-filter').value;
+      if (search) params.set('search', search);
+      if (role) params.set('role', role);
+      params.set('sort', document.getElementById('project-sort').value);
+      projects = await TaskForgeAPI.request(`/projects/?${params}`);
       render();
     } catch (error) {
       list.replaceChildren(el('div', { className: 'panel empty-state danger-text', text: error.message }));
@@ -106,8 +108,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   document.getElementById('create-project').addEventListener('click', () => openProjectForm());
-  document.getElementById('project-search').addEventListener('input', render);
-  document.getElementById('role-filter').addEventListener('change', render);
+  document.getElementById('project-search').addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(loadProjects, 250); });
+  document.getElementById('role-filter').addEventListener('change', loadProjects);
+  document.getElementById('project-sort').addEventListener('change', loadProjects);
   await loadProjects();
   if (new URLSearchParams(location.search).get('action') === 'create') openProjectForm();
 });

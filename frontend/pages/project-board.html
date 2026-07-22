@@ -10,6 +10,7 @@
   <script defer src="../js/config.js"></script>
   <script defer src="../js/api.js"></script>
   <script defer src="../js/realtime.js"></script>
+  <script defer src="../js/sidebar.js"></script>
   <script defer src="../js/common.js"></script>
   <script defer src="../js/board.js"></script>
 </head>
@@ -31,10 +32,11 @@
     </div>
   </header>
   <main class="page">
-    <div class="page-heading"><div><a href="projects.html">&larr; Projects</a><h2 id="project-name">Project board</h2><p id="project-description">Loading project...</p></div><div id="board-actions" class="board-toolbar"><button id="manage-members" class="btn btn-secondary hidden" type="button">Members</button><button id="create-task" class="btn btn-primary hidden" type="button">Create task</button></div></div>
-    <div class="filter-bar"><select id="priority-filter" aria-label="Priority filter"><option value="">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><select id="assignee-filter" aria-label="Assignee filter"><option value="">All assignees</option></select><select id="overdue-filter" aria-label="Overdue filter"><option value="">Any due date</option><option value="true">Overdue</option><option value="false">Not overdue</option></select></div>
+    <div class="page-heading"><div><a href="projects.html">&larr; Projects</a><h2 id="project-name">Project board</h2><p id="project-description">Loading project...</p></div><div id="board-actions" class="board-toolbar"><button id="activity-toggle" class="btn btn-secondary" type="button" aria-expanded="false" aria-controls="activity-drawer">Activity</button><button id="manage-labels" class="btn btn-secondary hidden" type="button">Labels</button><button id="manage-members" class="btn btn-secondary hidden" type="button">Members</button><button id="create-task" class="btn btn-primary hidden" type="button">Create task</button></div></div>
+    <div class="filter-bar"><input id="task-search" type="search" placeholder="Search tasks" aria-label="Search tasks"><select id="status-filter" aria-label="Status filter"><option value="">All statuses</option><option value="todo">To Do</option><option value="in_progress">In Progress</option><option value="done">Done</option></select><select id="priority-filter" aria-label="Priority filter"><option value="">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><select id="assignee-filter" aria-label="Assignee filter"><option value="">All assignees</option><option value="unassigned">Unassigned</option></select><select id="label-filter" aria-label="Label filter"><option value="">All labels</option></select><select id="due-filter" aria-label="Due date filter"><option value="">Any due date</option><option value="overdue">Overdue</option><option value="due_week">Due this week</option><option value="no_due_date">No due date</option></select><button id="clear-filters" class="btn btn-quiet" type="button">Clear filters</button></div>
     <section id="board" class="board" aria-label="Kanban board"></section>
   </main>
+  <aside id="activity-drawer" class="activity-drawer" aria-label="Project activity"><header><h2>Activity</h2><button id="activity-close" class="icon-btn" type="button" aria-label="Close activity">X</button></header><div id="activity-list" class="activity-list"><div class="loading">Loading activity...</div></div></aside>
   <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>
   <div id="toast-region" class="toast-region" aria-live="polite"></div>
 </body>

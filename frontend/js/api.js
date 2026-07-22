@@ -70,6 +70,25 @@
     return data;
   }
 
+  async function download(path, filename, retry = true) {
+    const token = getAccessToken();
+    const response = await fetch(`${TaskForgeConfig.apiBase}${path}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (response.status === 401 && retry && await refreshAccessToken()) {
+      return download(path, filename, false);
+    }
+    if (!response.ok) throw new Error(`Download failed with ${response.status}`);
+    const url = URL.createObjectURL(await response.blob());
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   window.TaskForgeAPI = {
     request,
     setTokens,
@@ -77,5 +96,6 @@
     getAccessToken,
     getRefreshToken,
     refreshAccessToken,
+    download,
   };
 })();
