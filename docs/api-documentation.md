@@ -18,6 +18,9 @@ Authorization: Bearer <access-token>
 | POST | `/api/auth/token/refresh/` | Public; refresh token |
 | GET | `/api/auth/me/` | Authenticated |
 | PATCH | `/api/auth/me/` | Authenticated owner of profile |
+| DELETE | `/api/auth/me/avatar/` | Authenticated owner of profile |
+
+Profile PATCH accepts `multipart/form-data`. Avatars support JPG, JPEG, PNG, and WebP up to 5 MB.
 
 ## Projects and Members
 
@@ -32,6 +35,18 @@ Authorization: Bearer <access-token>
 
 Member creation accepts `identifier` containing a username or email plus `role` containing `manager` or `member`.
 
+Project list parameters: `search`, `role=owner|manager|member`, and `sort=updated|created|alphabetical`.
+
+## Labels and Activity
+
+| Method | Path | Permission |
+|---|---|---|
+| GET | `/api/projects/{project_id}/labels/` | Project member |
+| POST | `/api/projects/{project_id}/labels/` | Owner or manager |
+| PATCH, DELETE | `/api/project-labels/{label_id}/` | Owner or manager |
+| GET | `/api/projects/{project_id}/activities/` | Project member |
+| PATCH | `/api/tasks/{task_id}/labels/` | Owner or manager |
+
 ## Tasks
 
 | Method | Path | Permission |
@@ -43,8 +58,26 @@ Member creation accepts `identifier` containing a username or email plus `role` 
 | PATCH | `/api/tasks/{task_id}/status/` | Owner, manager, or assigned member |
 | PATCH | `/api/tasks/{task_id}/assign/` | Owner or manager |
 | PATCH | `/api/tasks/{task_id}/position/` | Owner or manager |
+| PATCH | `/api/tasks/{task_id}/complete/` | Owner, manager, or assigned member |
+| PATCH | `/api/tasks/{task_id}/reopen/` | Owner, manager, or assigned member |
 
-Task list filters: `status`, `priority`, `assigned_to`, and `overdue=true|false`.
+Task list filters: `search`, `status`, `priority`, `assigned_to`, `label`, `overdue=true|false`, `due_this_week=true`, and `unassigned=true`.
+
+## Attachments and Checklists
+
+| Method | Path | Permission |
+|---|---|---|
+| GET, POST | `/api/tasks/{task_id}/attachments/` | Project member |
+| GET | `/api/task-attachments/{id}/download/` | Project member |
+| DELETE | `/api/task-attachments/{id}/` | Uploader, owner, or manager |
+| GET | `/api/tasks/{task_id}/checklists/` | Project member |
+| POST | `/api/tasks/{task_id}/checklists/` | Owner or manager |
+| DELETE | `/api/checklists/{id}/` | Owner or manager |
+| POST | `/api/checklists/{id}/items/` | Owner, manager, or task assignee |
+| PATCH, DELETE | `/api/checklist-items/{id}/` | Owner, manager, or task assignee |
+| PATCH | `/api/checklist-items/{id}/toggle/` | Owner, manager, or task assignee |
+
+Attachments support PNG, JPG, JPEG, WebP, PDF, TXT, DOC, DOCX, XLS, XLSX, and ZIP up to 10 MB. Downloads use JWT and are not public media links.
 
 ## Comments
 
@@ -64,13 +97,21 @@ Task list filters: `status`, `priority`, `assigned_to`, and `overdue=true|false`
 
 ## Dashboard
 
-`GET /api/dashboard/` returns project/task counts, recent projects, recent assigned tasks, and an unread notification count for the current user.
+`GET /api/dashboard/` returns project/task counts, completion percentage, due-this-week count, recent projects/tasks/activity, upcoming deadlines, workload per project, priority distribution, and unread notifications.
+
+## Due Notification Command
+
+```powershell
+python manage.py send_due_task_notifications
+```
+
+The command creates at most one due-soon and one overdue notification per task/recipient reminder state. Schedule it with cron or Windows Task Scheduler in production.
 
 ## WebSockets
 
 | Route | Permission | Server events |
 |---|---|---|
-| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added` |
+| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added`, `attachment_added`, `checklist_updated` |
 | `/ws/notifications/` | Authenticated user | `notification_created` for that user only |
 
 WebSockets use message-based JWT authentication. After the server sends `authentication_required`, send:

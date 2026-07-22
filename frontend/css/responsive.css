@@ -1,6 +1,6 @@
 @media (max-width: 980px) {
   .stat-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
-  .dashboard-grid, .task-layout { grid-template-columns: 1fr; }
+  .dashboard-grid, .insights-grid, .task-layout { grid-template-columns: 1fr; }
   .auth-page { grid-template-columns: 1fr; }
   .auth-visual { display: none; }
   .auth-form-side { min-height: 100vh; }
@@ -8,8 +8,13 @@
 
 @media (max-width: 760px) {
   .app-shell { padding-left: 0; }
+  .sidebar-collapsed .app-shell, body.sidebar-collapsed.app-shell { padding-left: 0; }
   .sidebar { transform: translateX(-100%); transition: transform 180ms ease; }
+  .sidebar, .sidebar-collapsed .sidebar { width: var(--sidebar-width); }
   .sidebar.open { transform: translateX(0); }
+  .sidebar-toggle { display: none; }
+  .sidebar-collapsed .brand-name, .sidebar-collapsed .nav-label, .sidebar-collapsed .sidebar-user-details, .sidebar-collapsed #logout-button { display: initial; }
+  .sidebar-collapsed .brand, .sidebar-collapsed .nav-link, .sidebar-collapsed .sidebar-user { justify-content: flex-start; }
   .mobile-menu { display: inline-grid; }
   .topbar { padding: 0 14px; }
   .topbar .user-chip span { display: none; }

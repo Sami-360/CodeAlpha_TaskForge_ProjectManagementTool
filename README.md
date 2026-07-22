@@ -251,7 +251,7 @@ Use `Authorization: Bearer <access-token>` for protected APIs. Task list filters
 
 | Route | Access | Events |
 |---|---|---|
-| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added` |
+| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added`, `attachment_created`, `attachment_deleted`, `checklist_updated` |
 | `/ws/notifications/` | Authenticated user, own group only | `notification_created` |
 
 The server first sends:
@@ -288,8 +288,8 @@ Manual flows are tracked in `docs/testing-checklist.md`.
 Latest full verification:
 
 ```text
-Found 57 test(s).
-Ran 57 tests in 475.650s
+Found 71 test(s).
+Ran 71 tests in 381.658s
 OK
 System check identified no issues (0 silenced).
 ```
@@ -313,10 +313,19 @@ Review screenshots are stored in `docs/screenshots/`:
 
 - `login-desktop.png`: desktop authentication and board preview
 - `login-mobile.png`: responsive authentication layout
+- `profile-page.png`: enhanced profile avatar, statistics, and edit controls
+- `collapsed-sidebar.png`: desktop dashboard with persistent collapsed navigation
+- `taskforge-admin.png`: real locally branded Django admin login
 
 ![TaskForge desktop login](docs/screenshots/login-desktop.png)
 
 ![TaskForge responsive login](docs/screenshots/login-mobile.png)
+
+![TaskForge profile](docs/screenshots/profile-page.png)
+
+![TaskForge collapsed sidebar](docs/screenshots/collapsed-sidebar.png)
+
+![TaskForge administration](docs/screenshots/taskforge-admin.png)
 
 The running application also provides dashboard, projects, Kanban board, task details, comments, notifications, and profile views after login.
 
@@ -332,6 +341,7 @@ feature/comments
 feature/frontend
 feature/notifications
 chore/final-audit
+feature/taskforge-enhancements
 ```
 
 Inspect before committing:
@@ -353,6 +363,23 @@ No remote push is performed automatically.
 ## 23. License
 
 No separate open-source license is included. The source remains under the author's default copyright rights unless a license is added.
+
+## Professional Enhancements
+
+TaskForge additionally includes validated UUID-based profile avatars, persistent collapsible navigation, accessible mobile drawer behavior, locally branded Django admin, protected task attachments, task checklists, project labels, activity history, advanced search/filters, consistent due states, complete/reopen actions, dashboard insights, and repeat-safe due notifications.
+
+Upload limits:
+
+- Avatars: JPG/JPEG/PNG/WebP, maximum 5 MB
+- Attachments: PNG/JPG/JPEG/WebP/PDF/TXT/DOC/DOCX/XLS/XLSX/ZIP, maximum 10 MB
+
+Run reminder processing manually or through Windows Task Scheduler/cron:
+
+```powershell
+python manage.py send_due_task_notifications
+```
+
+New endpoint details and permissions are documented in [docs/api-documentation.md](docs/api-documentation.md). Authenticated screenshot capture steps are in [docs/screenshots/enhancement-screenshot-guide.md](docs/screenshots/enhancement-screenshot-guide.md).
 
 ## Troubleshooting
 

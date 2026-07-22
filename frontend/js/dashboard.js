@@ -7,12 +7,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const stats = [
       ['Projects', data.total_projects],
       ['Owned', data.owned_projects],
+      ['Joined', data.joined_projects],
       ['Assigned', data.assigned_tasks],
       ['Overdue', data.overdue_tasks],
       ['To do', data.todo_tasks],
       ['In progress', data.in_progress_tasks],
       ['Completed', data.completed_tasks],
       ['Unread', data.unread_notifications],
+      ['Due this week', data.tasks_due_this_week],
+      ['Completion', `${data.completion_percentage}%`],
     ];
     document.getElementById('stats').replaceChildren(...stats.map(([label, value]) =>
       el('article', { className: 'panel stat' }, [
@@ -45,6 +48,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         ]),
       ]));
     });
+
+    const workload = document.getElementById('workload');
+    workload.replaceChildren(...data.workload_by_project.map((item) => {
+      const percent = item.total ? Math.round(item.completed * 100 / item.total) : 0;
+      return el('div', { className: 'insight-row' }, [el('div', { className: 'insight-head' }, [el('span', { text: item.project__name }), el('strong', { text: `${item.completed}/${item.total}` })]), el('div', { className: 'progress-track' }, [el('div', { className: 'progress-fill', style: `width:${percent}%` })])]);
+    }));
+    if (!data.workload_by_project.length) workload.append(el('div', { className: 'empty-state', text: 'No assigned workload.' }));
+
+    const priority = document.getElementById('priority-insight');
+    const priorityTotal = Object.values(data.priority_distribution).reduce((sum, value) => sum + value, 0);
+    priority.replaceChildren(...['high', 'medium', 'low'].map((name) => {
+      const count = data.priority_distribution[name] || 0;
+      return el('div', { className: 'insight-row' }, [el('div', { className: 'insight-head' }, [el('span', { text: name }), el('strong', { text: String(count) })]), el('div', { className: 'progress-track' }, [el('div', { className: `progress-fill priority-${name}`, style: `width:${priorityTotal ? Math.round(count * 100 / priorityTotal) : 0}%` })])]);
+    }));
+
+    const deadlines = document.getElementById('upcoming-deadlines');
+    deadlines.replaceChildren(...data.upcoming_deadlines.map((task) => el('a', { className: 'insight-link', href: `task-details.html?id=${task.id}` }, [el('strong', { text: task.title }), el('span', { text: `${task.project.name} - ${formatDate(task.due_date)}` })])));
+    if (!data.upcoming_deadlines.length) deadlines.append(el('div', { className: 'empty-state', text: 'No upcoming deadlines.' }));
+
+    const activity = document.getElementById('dashboard-activity');
+    activity.replaceChildren(...data.recent_activity.map((item) => el('div', { className: 'insight-link' }, [el('strong', { text: item.message }), el('span', { text: formatDate(item.created_at, true) })])));
+    if (!data.recent_activity.length) activity.append(el('div', { className: 'empty-state', text: 'No recent activity.' }));
   } catch (error) {
     toast(error.message, 'error');
   }

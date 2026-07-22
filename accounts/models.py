@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserMa
 from django.db import models
 from django.db.models.functions import Lower
 
+from accounts.validators import avatar_upload_path, validate_avatar
+
 
 class UserManager(DjangoUserManager):
     @classmethod
@@ -43,7 +45,12 @@ class UserManager(DjangoUserManager):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    avatar = models.ImageField(
+        upload_to=avatar_upload_path,
+        validators=[validate_avatar],
+        blank=True,
+        null=True,
+    )
     bio = models.CharField(max_length=300, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -60,7 +67,23 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.email = type(self).objects.normalize_email(self.email)
+        previous_avatar = None
+        if self.pk:
+            previous_avatar = type(self).objects.filter(pk=self.pk).values_list(
+                'avatar', flat=True
+            ).first()
         super().save(*args, **kwargs)
+        if previous_avatar and previous_avatar != self.avatar.name:
+            self.avatar.storage.delete(previous_avatar)
+
+    def remove_avatar(self):
+        if not self.avatar:
+            return
+        storage = self.avatar.storage
+        name = self.avatar.name
+        self.avatar = None
+        self.save(update_fields=['avatar', 'updated_at'])
+        storage.delete(name)
 
     def __str__(self):
         return self.get_full_name() or self.username

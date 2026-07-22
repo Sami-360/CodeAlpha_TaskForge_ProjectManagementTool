@@ -10,6 +10,7 @@
   <script defer src="../js/config.js"></script>
   <script defer src="../js/api.js"></script>
   <script defer src="../js/realtime.js"></script>
+  <script defer src="../js/sidebar.js"></script>
   <script defer src="../js/common.js"></script>
   <script defer src="../js/task-details.js"></script>
 </head>
@@ -33,7 +34,7 @@
   <main class="page">
     <div class="page-heading"><div><a id="back-to-board" href="projects.html">&larr; Project board</a><h2 id="task-title">Task details</h2><p id="task-project">Loading task...</p></div><div id="task-actions" class="board-toolbar"></div></div>
     <div class="grid task-layout">
-      <section id="task-detail" class="panel"><div class="loading">Loading task...</div></section>
+      <div class="task-main-stack"><section id="task-detail" class="panel"><div class="loading">Loading task...</div></section><section id="attachments" class="panel"><header class="panel-header"><h3>Attachments</h3></header><div class="panel-body"><form id="attachment-form" class="attachment-form"><input id="attachment-file" type="file" required><button class="btn btn-secondary" type="submit">Upload file</button></form><div id="attachment-list" class="resource-list"><div class="loading">Loading attachments...</div></div></div></section><section id="checklists" class="panel"><header class="panel-header"><h3>Checklists</h3><button id="add-checklist" class="btn btn-small btn-secondary hidden" type="button">Add checklist</button></header><div id="checklist-list" class="panel-body resource-list"><div class="loading">Loading checklists...</div></div></section></div>
       <section class="panel"><header class="panel-header"><h3>Comments</h3></header><div class="panel-body"><form id="comment-form" class="form-grid"><div class="field"><label for="comment-message">Add comment</label><textarea id="comment-message" maxlength="2000" required></textarea></div><button class="btn btn-primary" type="submit">Post comment</button></form><div id="comment-list" class="comment-list" style="margin-top:18px"></div></div></section>
     </div>
   </main>

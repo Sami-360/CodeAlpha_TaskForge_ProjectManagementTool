@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | TaskForge Admin{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/taskforge_admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}"><span class="taskforge-mark">TF</span> TaskForge Administration</a></h1>
+{% endblock %}
+
+{% block welcome-msg %}
+<span class="taskforge-welcome">Manage projects, people, tasks, and collaboration data.</span>
+{% endblock %}

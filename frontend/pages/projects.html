@@ -10,6 +10,7 @@
   <script defer src="../js/config.js"></script>
   <script defer src="../js/api.js"></script>
   <script defer src="../js/realtime.js"></script>
+  <script defer src="../js/sidebar.js"></script>
   <script defer src="../js/common.js"></script>
   <script defer src="../js/projects.js"></script>
 </head>
@@ -32,7 +33,7 @@
   </header>
   <main class="page">
     <div class="page-heading"><div><h2>Projects</h2><p>Workspaces you own or share with your team.</p></div><button id="create-project" class="btn btn-primary" type="button">Create project</button></div>
-    <div class="filter-bar"><label class="visually-hidden" for="project-search">Search projects</label><input id="project-search" type="search" placeholder="Search projects"><label class="visually-hidden" for="role-filter">Filter by role</label><select id="role-filter"><option value="">All roles</option><option value="owner">Owner</option><option value="manager">Manager</option><option value="member">Member</option></select></div>
+    <div class="filter-bar"><label class="visually-hidden" for="project-search">Search projects</label><input id="project-search" type="search" placeholder="Search projects"><label class="visually-hidden" for="role-filter">Filter by role</label><select id="role-filter"><option value="">All roles</option><option value="owner">Owner</option><option value="manager">Manager</option><option value="member">Member</option></select><label class="visually-hidden" for="project-sort">Sort projects</label><select id="project-sort"><option value="updated">Recently updated</option><option value="created">Recently created</option><option value="alphabetical">Alphabetical</option></select></div>
     <section id="project-list" class="grid cards-grid"><div class="loading">Loading projects...</div></section>
   </main>
   <aside id="notification-panel" class="notification-panel hidden" aria-label="Notifications"></aside>

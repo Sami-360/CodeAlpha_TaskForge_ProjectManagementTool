@@ -117,10 +117,8 @@
       window.location.replace(TaskForgeConfig.loginPage);
       return null;
     }
+    TaskForgeSidebar.init();
     document.querySelector(`[data-nav="${activePage}"]`)?.classList.add('active');
-    document.getElementById('mobile-menu')?.addEventListener('click', () => {
-      document.getElementById('sidebar')?.classList.toggle('open');
-    });
     document.getElementById('logout-button')?.addEventListener('click', () => {
       TaskForgeAPI.clearTokens();
       window.location.replace(TaskForgeConfig.loginPage);
@@ -138,6 +136,7 @@
       });
       const holder = document.getElementById('topbar-avatar');
       if (holder) holder.replaceWith(avatar(user, 'avatar'));
+      TaskForgeSidebar.setUser(user);
       loadNotifications();
       TaskForgeRealtime.connect('/notifications/', (event) => {
         if (event.type === 'notification_created') loadNotifications();

@@ -3,7 +3,7 @@ from django.db import transaction
 from django.db.models import Count, Q
 from rest_framework import serializers
 
-from projects.models import Project, ProjectMember
+from projects.models import Project, ProjectActivity, ProjectLabel, ProjectMember
 from projects.permissions import get_project_role
 
 User = get_user_model()
@@ -136,3 +136,70 @@ class ProjectMemberRoleSerializer(serializers.ModelSerializer):
         if self.instance.role == ProjectMember.Role.OWNER:
             raise serializers.ValidationError('The owner role cannot be changed.')
         return attrs
+
+
+class ProjectLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectLabel
+        fields = ['id', 'name', 'color', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+    def validate_name(self, value):
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError('Label name cannot be blank.')
+        project = self.context['project']
+        queryset = ProjectLabel.objects.filter(project=project, name__iexact=value)
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+        if queryset.exists():
+            raise serializers.ValidationError('This project already has that label.')
+        return value
+
+    def validate_color(self, value):
+        import re
+
+        if not re.fullmatch(r'#[0-9A-Fa-f]{6}', value):
+            raise serializers.ValidationError('Use a six-digit hexadecimal color such as #175CD3.')
+        return value.upper()
+
+    def create(self, validated_data):
+        return ProjectLabel.objects.create(
+            project=self.context['project'],
+            created_by=self.context['request'].user,
+            **validated_data,
+        )
+
+
+class ProjectActivitySerializer(serializers.ModelSerializer):
+    actor = UserSummarySerializer(read_only=True)
+    target_user = UserSummarySerializer(read_only=True)
+    task_id = serializers.IntegerField(read_only=True)
+    message = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProjectActivity
+        fields = [
+            'id', 'action', 'message', 'actor', 'task_id', 'target_user',
+            'metadata', 'created_at',
+        ]
+
+    def get_message(self, activity):
+        actor = activity.actor.get_full_name() or activity.actor.username if activity.actor else 'System'
+        detail = activity.metadata
+        messages = {
+            ProjectActivity.Action.PROJECT_CREATED: f'{actor} created the project.',
+            ProjectActivity.Action.PROJECT_UPDATED: f'{actor} updated the project.',
+            ProjectActivity.Action.MEMBER_ADDED: f'{actor} added {detail.get("member_name", "a member")}.',
+            ProjectActivity.Action.MEMBER_REMOVED: f'{actor} removed {detail.get("member_name", "a member")}.',
+            ProjectActivity.Action.MEMBER_ROLE_CHANGED: f'{actor} changed a member role to {detail.get("role", "a new role")}.',
+            ProjectActivity.Action.TASK_CREATED: f'{actor} created task "{detail.get("task_title", "Task")}".',
+            ProjectActivity.Action.TASK_ASSIGNED: f'{actor} assigned task "{detail.get("task_title", "Task")}".',
+            ProjectActivity.Action.TASK_STATUS_CHANGED: f'{actor} moved a task to {detail.get("status", "a new status")}.',
+            ProjectActivity.Action.TASK_UPDATED: f'{actor} updated task "{detail.get("task_title", "Task")}".',
+            ProjectActivity.Action.TASK_DELETED: f'{actor} deleted task "{detail.get("task_title", "Task")}".',
+            ProjectActivity.Action.COMMENT_ADDED: f'{actor} commented on "{detail.get("task_title", "a task")}".',
+            ProjectActivity.Action.ATTACHMENT_ADDED: f'{actor} attached "{detail.get("filename", "a file")}".',
+            ProjectActivity.Action.CHECKLIST_UPDATED: f'{actor} updated a checklist.',
+        }
+        return messages.get(activity.action, f'{actor} updated the project.')

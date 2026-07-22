@@ -17,6 +17,7 @@ class CustomUserAdmin(UserAdmin):
     ]
     search_fields = ['username', 'email', 'first_name', 'last_name']
     ordering = ['username']
+    list_filter = ['is_active', 'is_staff', 'date_joined']
     readonly_fields = [*UserAdmin.readonly_fields, 'date_joined', 'updated_at']
     fieldsets = [
         *UserAdmin.fieldsets,

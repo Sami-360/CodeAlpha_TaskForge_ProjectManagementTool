@@ -7,6 +7,8 @@ from comments.serializers import CommentSerializer
 from notifications.models import Notification
 from notifications.realtime import broadcast_project_event
 from notifications.services import notify_users
+from projects.models import ProjectActivity
+from projects.services import record_activity
 from tasks.models import Task
 
 
@@ -45,6 +47,13 @@ class CommentListCreateView(generics.ListCreateAPIView):
                 'message': comment.message,
                 'created_at': comment.created_at.isoformat(),
             },
+        )
+        record_activity(
+            project=task.project,
+            actor=self.request.user,
+            action=ProjectActivity.Action.COMMENT_ADDED,
+            task=task,
+            metadata={'task_title': task.title},
         )
         return comment
 

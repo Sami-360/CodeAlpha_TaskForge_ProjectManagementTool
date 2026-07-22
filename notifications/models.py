@@ -13,6 +13,11 @@ class Notification(models.Model):
         TASK_UPDATED = 'task_updated', 'Task updated'
         TASK_STATUS_CHANGED = 'task_status_changed', 'Task status changed'
         NEW_COMMENT = 'new_comment', 'New comment'
+        ATTACHMENT_ADDED = 'attachment_added', 'Attachment added'
+        CHECKLIST_UPDATED = 'checklist_updated', 'Checklist updated'
+        DUE_SOON = 'due_soon', 'Task due soon'
+        TASK_OVERDUE = 'task_overdue', 'Task overdue'
+        MEMBER_ROLE_CHANGED = 'member_role_changed', 'Member role changed'
 
     recipient = models.ForeignKey(
         settings.AUTH_USER_MODEL,

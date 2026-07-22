@@ -16,6 +16,14 @@ TaskForge is a collaborative project-management application for CodeAlpha Full S
 8. Comment authors edit/delete their own comments; owners/managers may moderate deletion.
 9. Notifications are created for membership, assignment, status, and comment events.
 10. The frontend supports authentication, projects, a Kanban board, task detail, comments, profile, and notifications.
+11. Profile avatars use unique paths, image validation, a 5 MB limit, preview, replacement, and deletion.
+12. Authenticated pages share persistent desktop sidebar and accessible mobile drawer behavior.
+13. Tasks support protected attachments, checklists, and project-scoped labels.
+14. Project members can review a limited newest-first activity history.
+15. Project/task search and filters cover roles, labels, due windows, and unassigned tasks.
+16. Due-state responses distinguish today, tomorrow, soon, overdue, completed, and no date.
+17. Dashboard insights summarize workload, priority, deadlines, activity, and completion.
+18. A repeat-safe command creates due-soon and overdue notifications for scheduling.
 
 ## Role Rules
 
@@ -46,6 +54,10 @@ The owner membership cannot be removed or downgraded through normal membership e
 - The frontend is responsive and keyboard-usable without a UI framework.
 - User-provided text is rendered with safe DOM APIs, not unsafe HTML insertion.
 - Automated tests cover permissions, validation, and the primary integration flow.
+- Avatar and attachment paths use UUID filenames and never trust client paths.
+- Avatar files are limited to 5 MB; task attachments are limited to 10 MB.
+- Attachment downloads require JWT project membership rather than public media URLs.
+- The local sidebar state is stored under `taskforgeSidebarCollapsed`.
 
 ## Development Phases
 

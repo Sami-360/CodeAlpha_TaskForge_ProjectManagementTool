@@ -14,6 +14,15 @@
 - [x] Notification creation, isolation, single read, and read all
 - [x] Full two-user collaboration flow plus outsider rejection
 - [x] WebSocket authentication, project membership, and notification isolation
+- [x] Avatar type/size validation, replacement, deletion, and profile statistics
+- [x] Attachment type/size validation, protected download, deletion permission, and file cleanup
+- [x] Checklist creation, item permission, toggle, and progress
+- [x] Label validation, uniqueness, assignment, filtering, and outsider isolation
+- [x] Activity creation, ordering, and outsider rejection
+- [x] Project search/role/sort and enhanced task filters
+- [x] Complete/reopen behavior and dashboard insight scoping
+- [x] Repeat-safe due notification command
+- [x] TaskForge admin branding and local CSS reference
 
 Required verification command:
 
@@ -39,6 +48,13 @@ python manage.py test
 - [ ] Loading states, confirmations, toasts, and network errors
 - [x] Keyboard focus styles and narrow authentication layout
 - [ ] No browser console errors
+- [ ] Desktop sidebar collapse/expand and refresh persistence
+- [ ] Mobile sidebar overlay, navigation close, and Escape close
+- [ ] Avatar preview/change/remove flow using a real image
+- [ ] Attachment upload/download/delete using each supported category
+- [ ] Checklist and label controls on task details/board
+- [ ] Activity drawer links and real-time refresh
+- [ ] Dashboard insight layout at desktop and mobile widths
 
 ## Security Audit
 
