@@ -72,3 +72,20 @@ Acceptance criteria:
 - The client handles loading, empty, error, unauthorized, and confirmation states.
 - Access tokens are attached automatically and refreshed once after HTTP 401.
 - Protected pages redirect to login when refresh fails.
+
+## Professional Enhancements
+
+- As a user, I can preview, upload, replace, or remove a validated profile picture and see my work statistics.
+- As a desktop user, I can collapse navigation and keep that preference; as a mobile user, I can use an accessible off-canvas drawer.
+- As a project member, I can download protected task attachments and review checklists, labels, and activity.
+- As an owner or manager, I can manage project labels and checklist structure.
+- As a task assignee, I can add and complete checklist items and complete or reopen my task.
+- As a user, I can search/sort projects, filter board work, and review deadline/workload insights.
+
+Acceptance criteria:
+
+- Avatar images accept JPG/JPEG/PNG/WebP up to 5 MB and old files are removed safely.
+- Attachments accept the documented formats up to 10 MB; outsiders cannot download them.
+- Labels are project-scoped, case-insensitively unique, and use validated six-digit colors.
+- Activity entries contain safe metadata, a human-readable message, and newest-first ordering.
+- Due reminders are idempotent when the command runs repeatedly.
