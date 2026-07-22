@@ -15,9 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.views.generic import RedirectView
+from django.views.static import serve as serve_media
 
 from config.views import health_check
 from projects.views import DashboardView, GlobalSearchView, ProjectLabelDetailView
@@ -27,6 +28,7 @@ admin.site.site_title = 'TaskForge Admin'
 admin.site.index_title = 'Project Management Control Panel'
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/static/pages/login.html', permanent=False), name='frontend-home'),
     path('admin/', admin.site.urls),
     path('api/health/', health_check, name='api-health'),
     path('api/auth/', include('accounts.urls')),
@@ -39,5 +41,7 @@ urlpatterns = [
     path('api/notifications/', include('notifications.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.SERVE_MEDIA:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve_media, {'document_root': settings.MEDIA_ROOT}),
+    ]

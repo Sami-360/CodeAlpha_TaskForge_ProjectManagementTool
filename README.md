@@ -158,7 +158,15 @@ Use the password that was set during PostgreSQL installation or changed in pgAdm
 DJANGO_SECRET_KEY=replace-with-a-long-random-secret-key
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+DJANGO_CSRF_TRUSTED_ORIGINS=
+DJANGO_SECURE_SSL_REDIRECT=False
+DJANGO_SECURE_HSTS_SECONDS=0
+DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS=False
+DJANGO_SECURE_HSTS_PRELOAD=False
+DJANGO_SERVE_MEDIA=False
 
+# Optional in local development; Render supplies this automatically.
+DATABASE_URL=
 POSTGRES_DB=taskforge
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=replace-with-your-postgres-password
@@ -216,6 +224,37 @@ python -m http.server 5500 --bind 127.0.0.1 --directory .
 Open `http://127.0.0.1:5500/`. The root entry redirects to the correct page under `frontend/pages/`; do not append a second path manually. Keep both terminal servers running. The frontend calls the API and WebSockets at `127.0.0.1:8000`.
 
 Legacy `/pages/*.html` bookmarks remain supported and redirect to the canonical `/frontend/pages/*.html` routes while preserving query parameters.
+
+## Deploying to Render
+
+The repository includes `render.yaml`, `build.sh`, and production-aware Django/frontend settings. The Blueprint creates one Django ASGI web service and one PostgreSQL database in Render's Singapore region.
+
+1. Open the Render Dashboard and select **Blueprints**.
+2. Click **New Blueprint Instance**.
+3. Connect `Sami-360/CodeAlpha_TaskForge_ProjectManagementTool`.
+4. Keep the detected Blueprint name and click **Apply**.
+5. Wait until both `taskforge-db-sami360` and `taskforge-sami360` show as available/live.
+6. Open the web service URL and verify `/api/health/` before registering users.
+
+The expected public routes are:
+
+- App: `https://taskforge-sami360.onrender.com/`
+- Admin: `https://taskforge-sami360.onrender.com/admin/`
+- Health API: `https://taskforge-sami360.onrender.com/api/health/`
+
+Render generates `DJANGO_SECRET_KEY`, injects `DATABASE_URL`, runs `collectstatic` and migrations, and starts Daphne on the assigned port. Do not copy the local `.env` into Render.
+
+Free Render web services do not include Shell access. To create the production administrator, copy the PostgreSQL **External Database URL** from the Render database's **Connect** panel and use it only in the current local PowerShell session:
+
+```powershell
+$env:DATABASE_URL = 'paste-the-render-external-database-url-here'
+python manage.py createsuperuser
+Remove-Item Env:DATABASE_URL
+```
+
+Never save or commit the external database URL, and clear it from the terminal after the command.
+
+The Render PostgreSQL database starts empty. Local users, projects, tasks, comments, and uploaded files are not copied automatically; create production data through the deployed application/admin or perform a deliberate database migration separately.
 
 ## 16. API Endpoints
 
@@ -433,9 +472,11 @@ New endpoint details and permissions are documented in [docs/api-documentation.m
 ## Known Production Limitations
 
 - The current in-memory Channels layer works only in one application process. A multi-process deployment requires Redis or another shared channel layer.
-- The repository contains development settings, not a hardened production settings module. Production deployment must set `DJANGO_DEBUG=False`, use a strong secret, restrict hosts and CORS origins, and terminate HTTPS at a reverse proxy or hosting platform.
-- Django's development server and Python's static file server are local tools only. Production needs an ASGI server plus dedicated static and media serving.
-- Uploaded media is stored on the local filesystem. Multi-instance or ephemeral hosting requires shared/object storage and a backup policy.
+- The Render Blueprint runs Django through Daphne and serves collected application/static assets through WhiteNoise. The local `runserver` and Python static server remain development-only commands.
+- A free Render web service sleeps after 15 minutes without inbound HTTP or WebSocket traffic, so its first response after inactivity can take about a minute.
+- The demo deployment serves uploaded media from the web-service filesystem. Free Render storage is ephemeral, so avatars and attachments disappear after a sleep, restart, or deploy; durable production use requires object storage or a paid service with a persistent disk.
+- Free Render PostgreSQL is limited to 1 GB, has no backups, and expires 30 days after creation. Upgrade before expiry for a lasting client deployment.
+- The online PostgreSQL database is separate from the local database and starts empty.
 - Automated PostgreSQL backups, centralized logging, monitoring, and rate limiting are deployment responsibilities and are not configured in this repository.
 
 ## Troubleshooting

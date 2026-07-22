@@ -6,6 +6,14 @@ from django.test import SimpleTestCase
 
 
 class FrontendRouteTests(SimpleTestCase):
+    def test_application_root_redirects_to_collected_frontend(self):
+        response = self.client.get('/')
+        self.assertRedirects(
+            response,
+            '/static/pages/login.html',
+            fetch_redirect_response=False,
+        )
+
     def test_root_entry_targets_existing_frontend_pages(self):
         entry = (Path(settings.BASE_DIR) / 'index.html').read_text(encoding='utf-8')
         for target in ('frontend/pages/login.html', 'frontend/pages/dashboard.html'):
@@ -37,3 +45,12 @@ class FrontendRouteTests(SimpleTestCase):
             self.assertTrue(alias.is_file())
             self.assertIn(canonical, alias.read_text(encoding='utf-8'))
             self.assertTrue((root / canonical.lstrip('/')).is_file())
+
+    def test_frontend_config_supports_local_and_hosted_backends(self):
+        config = (
+            Path(settings.BASE_DIR) / 'frontend' / 'js' / 'config.js'
+        ).read_text(encoding='utf-8')
+        self.assertIn("window.location.origin", config)
+        self.assertIn("'wss:'", config)
+        self.assertIn("window.location.hostname}:8000", config)
+        self.assertIn("window.location.port === '5500'", config)

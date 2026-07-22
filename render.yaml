@@ -1,0 +1,37 @@
+databases:
+  - name: taskforge-db-sami360
+    plan: free
+    databaseName: taskforge
+    user: taskforge
+    region: singapore
+
+services:
+  - type: web
+    name: taskforge-sami360
+    runtime: python
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: ./build.sh
+    startCommand: daphne -b 0.0.0.0 -p $PORT config.asgi:application
+    healthCheckPath: /api/health/
+    autoDeployTrigger: commit
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: taskforge-db-sami360
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: 'False'
+      - key: DJANGO_SECURE_SSL_REDIRECT
+        value: 'True'
+      - key: DJANGO_SECURE_HSTS_SECONDS
+        value: '3600'
+      - key: DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS
+        value: 'True'
+      - key: DJANGO_SECURE_HSTS_PRELOAD
+        value: 'True'
+      - key: DJANGO_SERVE_MEDIA
+        value: 'True'
