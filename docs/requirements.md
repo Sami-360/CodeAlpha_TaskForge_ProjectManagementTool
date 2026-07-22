@@ -57,7 +57,7 @@ The owner membership cannot be removed or downgraded through normal membership e
 - Avatar and attachment paths use UUID filenames and never trust client paths.
 - Avatar files are limited to 5 MB; task attachments are limited to 10 MB.
 - Attachment downloads require JWT project membership rather than public media URLs.
-- The local sidebar state is stored under `taskforgeSidebarCollapsed`.
+- Desktop navigation stays visible; mobile navigation uses an accessible off-canvas drawer.
 
 ## Development Phases
 

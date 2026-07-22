@@ -9,7 +9,6 @@ Authenticated interaction automation is not bundled with this repository, so scr
 | Filename | Real UI state |
 |---|---|
 | `profile-page.png` | Profile avatar, statistics, preview controls, and bio counter |
-| `collapsed-sidebar.png` | Dashboard with desktop sidebar collapsed |
 | `mobile-sidebar.png` | 390x844 dashboard with mobile drawer and overlay open |
 | `taskforge-admin.png` | Django admin login or index with TaskForge branding |
 | `task-checklist.png` | Task details showing checklist progress and items |

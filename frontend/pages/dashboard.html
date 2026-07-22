@@ -16,13 +16,15 @@
 </head>
 <body class="app-shell">
   <aside id="sidebar" class="sidebar">
-    <a class="brand" href="dashboard.html"><span class="brand-mark">TF</span><span class="brand-name">TaskForge</span></a>
+    <a class="brand" href="dashboard.html"><span class="brand-mark">TF</span><span class="brand-copy"><strong class="brand-name">TaskForge</strong><small>Project workspace</small></span></a>
     <nav class="nav-list" aria-label="Main navigation">
-      <a class="nav-link" data-nav="dashboard" href="dashboard.html">Dashboard</a>
-      <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
-      <a class="nav-link" data-nav="profile" href="profile.html">Profile</a>
+      <span class="nav-section-label">Workspace</span>
+      <a class="nav-link" data-nav="dashboard" href="dashboard.html"><span class="nav-icon material-symbols-outlined" aria-hidden="true">space_dashboard</span><span class="nav-label">Dashboard</span></a>
+      <a class="nav-link" data-nav="projects" href="projects.html"><span class="nav-icon material-symbols-outlined" aria-hidden="true">folder_open</span><span class="nav-label">Projects</span></a>
+      <a class="nav-link" data-nav="profile" href="profile.html"><span class="nav-icon material-symbols-outlined" aria-hidden="true">person</span><span class="nav-label">Profile</span></a>
+      <a class="sidebar-quick-action" href="projects.html?action=create" title="Create project"><span class="nav-icon material-symbols-outlined" aria-hidden="true">add</span><span class="nav-label">New project</span></a>
     </nav>
-    <div class="sidebar-foot"><button id="logout-button" class="btn btn-quiet" type="button">Sign out</button></div>
+    <div class="sidebar-foot"><button id="logout-button" class="btn btn-quiet" type="button"><span class="material-symbols-outlined" aria-hidden="true">logout</span><span class="nav-label">Sign out</span></button></div>
   </aside>
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:10px"><button id="mobile-menu" class="icon-btn mobile-menu" type="button" aria-label="Open navigation" title="Menu">&#9776;</button><h1>Dashboard</h1></div>

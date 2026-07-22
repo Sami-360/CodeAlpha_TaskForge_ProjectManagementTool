@@ -48,7 +48,7 @@ python manage.py test
 - [ ] Loading states, confirmations, toasts, and network errors
 - [x] Keyboard focus styles and narrow authentication layout
 - [ ] No browser console errors
-- [ ] Desktop sidebar collapse/expand and refresh persistence
+- [ ] Desktop sidebar menu stays visible and each menu button opens the correct page
 - [ ] Mobile sidebar overlay, navigation close, and Escape close
 - [ ] Avatar preview/change/remove flow using a real image
 - [ ] Attachment upload/download/delete using each supported category

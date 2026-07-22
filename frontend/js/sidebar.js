@@ -1,8 +1,6 @@
 (function () {
-  const STORAGE_KEY = 'taskforgeSidebarCollapsed';
   let sidebar;
   let overlay;
-  let desktopToggle;
   let mobileToggle;
 
   function isMobile() {
@@ -21,14 +19,6 @@
     overlay?.classList.add('visible');
     mobileToggle?.setAttribute('aria-expanded', 'true');
     document.body.classList.add('sidebar-drawer-open');
-  }
-
-  function applyDesktopState(collapsed) {
-    document.body.classList.toggle('sidebar-collapsed', collapsed);
-    desktopToggle?.setAttribute('aria-expanded', String(!collapsed));
-    desktopToggle?.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
-    desktopToggle?.setAttribute('title', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
-    if (desktopToggle) desktopToggle.textContent = collapsed ? '>' : '<';
   }
 
   function decorateNavigation() {
@@ -110,17 +100,6 @@
     overlay.addEventListener('click', closeMobile);
     document.body.append(overlay);
 
-    desktopToggle = document.createElement('button');
-    desktopToggle.type = 'button';
-    desktopToggle.className = 'sidebar-toggle';
-    desktopToggle.setAttribute('aria-controls', 'sidebar');
-    desktopToggle.addEventListener('click', () => {
-      const collapsed = !document.body.classList.contains('sidebar-collapsed');
-      localStorage.setItem(STORAGE_KEY, String(collapsed));
-      applyDesktopState(collapsed);
-    });
-    sidebar.append(desktopToggle);
-
     mobileToggle = document.getElementById('mobile-menu');
     mobileToggle?.setAttribute('aria-controls', 'sidebar');
     mobileToggle?.setAttribute('aria-expanded', 'false');
@@ -133,7 +112,6 @@
       if (event.key === 'Escape') closeMobile();
     });
     window.addEventListener('resize', () => { if (!isMobile()) closeMobile(); });
-    applyDesktopState(localStorage.getItem(STORAGE_KEY) === 'true');
   }
 
   function setUser(user) {

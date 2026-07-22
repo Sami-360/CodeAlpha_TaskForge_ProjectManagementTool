@@ -288,8 +288,8 @@ Manual flows are tracked in `docs/testing-checklist.md`.
 Latest full verification:
 
 ```text
-Found 71 test(s).
-Ran 71 tests in 533.351s
+Found 72 test(s).
+Ran 72 tests in 473.380s
 OK
 System check identified no issues (0 silenced).
 ```
@@ -314,7 +314,6 @@ Review screenshots are stored in `docs/screenshots/`:
 - `login-desktop.png`: desktop authentication and board preview
 - `login-mobile.png`: responsive authentication layout
 - `profile-page.png`: enhanced profile avatar, statistics, and edit controls
-- `collapsed-sidebar.png`: desktop dashboard with persistent collapsed navigation
 - `taskforge-admin.png`: real locally branded Django admin login
 
 ![TaskForge desktop login](docs/screenshots/login-desktop.png)
@@ -322,8 +321,6 @@ Review screenshots are stored in `docs/screenshots/`:
 ![TaskForge responsive login](docs/screenshots/login-mobile.png)
 
 ![TaskForge profile](docs/screenshots/profile-page.png)
-
-![TaskForge collapsed sidebar](docs/screenshots/collapsed-sidebar.png)
 
 ![TaskForge administration](docs/screenshots/taskforge-admin.png)
 
@@ -366,7 +363,7 @@ No separate open-source license is included. The source remains under the author
 
 ## Professional Enhancements
 
-TaskForge additionally includes validated UUID-based profile avatars, persistent collapsible navigation, accessible mobile drawer behavior, locally branded Django admin, protected task attachments, task checklists, project labels, activity history, advanced search/filters, consistent due states, complete/reopen actions, dashboard insights, and repeat-safe due notifications.
+TaskForge additionally includes validated UUID-based profile avatars, persistent desktop navigation, accessible mobile drawer behavior, locally branded Django admin, protected task attachments, task checklists, project labels, activity history, advanced search/filters, consistent due states, complete/reopen actions, dashboard insights, and repeat-safe due notifications.
 
 The application shell uses the TaskForge teal, graphite, and neutral palette across the frontend and Django admin. Both interfaces include responsive side navigation, keyboard-visible focus states, active-page indicators, compact management panels, and real permission-aware navigation links.
 

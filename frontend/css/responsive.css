@@ -8,14 +8,9 @@
 
 @media (max-width: 760px) {
   .app-shell { padding-left: 0; }
-  .sidebar-collapsed .app-shell, body.sidebar-collapsed.app-shell { padding-left: 0; }
   .sidebar { transform: translateX(-100%); transition: transform 180ms ease; }
-  .sidebar, .sidebar-collapsed .sidebar { width: var(--sidebar-width); }
+  .sidebar { width: var(--sidebar-width); }
   .sidebar.open { transform: translateX(0); }
-  .sidebar-toggle { display: none; }
-  .sidebar-collapsed .brand-copy, .sidebar-collapsed .nav-label, .sidebar-collapsed .nav-section-label, .sidebar-collapsed .sidebar-user-details { display: initial; }
-  .sidebar-collapsed #logout-button { display: flex; }
-  .sidebar-collapsed .brand, .sidebar-collapsed .nav-link, .sidebar-collapsed .sidebar-user { justify-content: flex-start; }
   .mobile-menu { display: inline-grid; }
   .topbar { padding: 0 14px; }
   .topbar .user-chip span { display: none; }

@@ -217,3 +217,16 @@ class EnhancementTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'TaskForge Administration')
         self.assertContains(response, 'taskforge_admin.css')
+
+    def test_taskforge_admin_has_fixed_model_navigation_without_arrow_toggle(self):
+        self.owner.is_staff = True
+        self.owner.is_superuser = True
+        self.owner.save(update_fields=['is_staff', 'is_superuser'])
+        self.client.force_login(self.owner)
+
+        response = self.client.get('/admin/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'admin-nav-groups')
+        self.assertContains(response, 'admin-model-link', count=12)
+        self.assertNotContains(response, 'toggle-nav-sidebar')
