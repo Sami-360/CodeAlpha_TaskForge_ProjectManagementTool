@@ -403,7 +403,7 @@ No remote push is performed automatically.
 
 ## 23. License
 
-No separate open-source license is included. The source remains under the author's default copyright rights unless a license is added.
+TaskForge is available under the [MIT License](LICENSE).
 
 ## Professional Enhancements
 
