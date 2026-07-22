@@ -133,6 +133,7 @@ class ProjectActivity(models.Model):
         TASK_DELETED = 'task_deleted', 'Task deleted'
         COMMENT_ADDED = 'comment_added', 'Comment added'
         ATTACHMENT_ADDED = 'attachment_added', 'Attachment added'
+        ATTACHMENT_DELETED = 'attachment_deleted', 'Attachment deleted'
         CHECKLIST_UPDATED = 'checklist_updated', 'Checklist updated'
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='activities')

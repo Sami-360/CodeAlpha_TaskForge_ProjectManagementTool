@@ -16,12 +16,22 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .coverage
+coverage.xml
 htmlcov/
 
 # Django runtime files
 *.log
+*.out
+*.err
+*.pid
 db.sqlite3
 db.sqlite3-journal
+*.dump
+*.backup
+*.bak
+*.sql
+*.sql.gz
+backups/
 media/*
 !media/.gitkeep
 !media/avatars/
@@ -31,6 +41,13 @@ media/avatars/*
 media/task_attachments/*
 !media/task_attachments/.gitkeep
 staticfiles/
+
+# Temporary files and directories
+*.tmp
+*.temp
+.tmp/
+tmp/
+temp/
 
 # Editors and operating systems
 .vscode/

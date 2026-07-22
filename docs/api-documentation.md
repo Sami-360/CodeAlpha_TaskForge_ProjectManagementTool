@@ -111,7 +111,7 @@ The command creates at most one due-soon and one overdue notification per task/r
 
 | Route | Permission | Server events |
 |---|---|---|
-| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added`, `attachment_added`, `checklist_updated` |
+| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added`, `attachment_added`, `attachment_deleted`, `checklist_updated` |
 | `/ws/notifications/` | Authenticated user | `notification_created` for that user only |
 
 WebSockets use message-based JWT authentication. After the server sends `authentication_required`, send:

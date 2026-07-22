@@ -7,7 +7,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from projects.models import Project, ProjectMember
-from tasks.models import Task
+from comments.models import Comment
+from tasks.models import ChecklistItem, Task, TaskAttachment, TaskChecklist
 
 User = get_user_model()
 
@@ -260,3 +261,30 @@ class TaskAPITests(APITestCase):
         task.refresh_from_db()
         self.assertEqual(task.status, Task.Status.DONE)
         self.assertEqual(task.position, 4)
+
+    def test_task_list_includes_aggregated_workspace_counts(self):
+        task = self.create_task()
+        Comment.objects.create(task=task, user=self.member, message='Ready for review')
+        TaskAttachment.objects.create(
+            task=task,
+            uploaded_by=self.owner,
+            file='task_attachments/test.txt',
+            original_name='test.txt',
+            file_size=4,
+        )
+        checklist = TaskChecklist.objects.create(
+            task=task, title='Acceptance', created_by=self.owner
+        )
+        ChecklistItem.objects.create(checklist=checklist, text='One', is_completed=True)
+        ChecklistItem.objects.create(checklist=checklist, text='Two')
+        self.authenticate(self.member)
+
+        response = self.client.get(reverse('task-list', args=[self.project.id]))
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        result = response.data[0]
+        self.assertEqual(result['comment_count'], 1)
+        self.assertEqual(result['attachment_count'], 1)
+        self.assertEqual(result['checklist_total'], 2)
+        self.assertEqual(result['checklist_completed'], 1)
+        self.assertEqual(result['checklist_percentage'], 50)

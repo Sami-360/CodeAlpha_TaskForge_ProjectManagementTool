@@ -112,6 +112,17 @@ class EnhancementTests(TestCase):
         self.authenticate(self.member)
         self.assertEqual(self.client.delete(f'/api/task-attachments/{attachment.pk}/').status_code, 204)
         self.assertFalse(file_path.exists())
+        activity = ProjectActivity.objects.get(
+            action=ProjectActivity.Action.ATTACHMENT_DELETED,
+            task=self.task,
+        )
+        self.assertEqual(activity.metadata['filename'], 'notes.txt')
+        self.assertFalse(
+            ProjectActivity.objects.filter(
+                action=ProjectActivity.Action.CHECKLIST_UPDATED,
+                task=self.task,
+            ).exists()
+        )
 
     def test_attachment_download_is_project_member_only(self):
         attachment = TaskAttachment.objects.create(

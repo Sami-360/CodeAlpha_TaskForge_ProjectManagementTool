@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       ]);
       document.getElementById('project-name').textContent = project.name;
       document.getElementById('project-description').textContent = project.description || 'No project description.';
+      const meta = document.getElementById('project-meta');
+      TaskForgeSidebar.setContext({ members });
+      if (meta) meta.textContent = `${project.current_user_role || 'member'} | Private project | ${members.length} member${members.length === 1 ? '' : 's'}`;
+      renderMemberPreview();
       document.getElementById('create-task').classList.toggle('hidden', !canManage());
       document.getElementById('manage-members').classList.toggle('hidden', project.current_user_role !== 'owner');
       document.getElementById('manage-labels').classList.toggle('hidden', !canManage());
@@ -48,7 +52,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   function populateAssignees() {
     const filter = document.getElementById('assignee-filter');
     const current = filter.value;
-    filter.replaceChildren(el('option', { value: '', text: 'All assignees' }));
+    filter.replaceChildren(
+      el('option', { value: '', text: 'All assignees' }),
+      el('option', { value: 'unassigned', text: 'Unassigned' }),
+    );
     members.forEach((membership) => {
       filter.append(el('option', {
         value: String(membership.user.id),
@@ -80,8 +87,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     return labels[task.due_state] || 'No due date';
   }
 
+  function icon(name, label) {
+    return el('span', { className: 'material-symbols-outlined', text: name, ariaHidden: 'true', title: label });
+  }
+
+  function metric(name, value, label) {
+    return el('span', { className: 'task-metric', title: label }, [icon(name, label), el('span', { text: String(value) })]);
+  }
+
+  function renderMemberPreview() {
+    const holder = document.getElementById('project-members-preview');
+    if (!holder) return;
+    holder.replaceChildren(...members.slice(0, 4).map((membership) => avatar(membership.user, 'avatar avatar-board')));
+    if (members.length > 4) holder.append(el('span', { className: 'avatar avatar-board avatar-more', text: `+${members.length - 4}` }));
+  }
+
   function taskCard(task) {
     const card = el('article', { className: 'task-card', draggable: canManage(), 'data-task-id': String(task.id) });
+    const menuButton = el('button', { className: 'task-menu-button', type: 'button', ariaLabel: `Actions for ${task.title}`, ariaExpanded: 'false' }, [icon('more_horiz', 'Task actions')]);
+    const menu = el('div', { className: 'task-quick-menu hidden' }, [
+      el('a', { href: `task-details.html?id=${task.id}`, text: 'Open details' }),
+    ]);
+    if (canChangeStatus(task)) {
+      const completion = el('button', { type: 'button', text: task.status === 'done' ? 'Reopen task' : 'Mark complete' });
+      completion.addEventListener('click', async () => {
+        try {
+          await TaskForgeAPI.request(`/tasks/${task.id}/${task.status === 'done' ? 'reopen' : 'complete'}/`, { method: 'PATCH' });
+          toast(task.status === 'done' ? 'Task reopened.' : 'Task completed.');
+          await reloadTasks();
+        } catch (error) { toast(error.message, 'error'); }
+      });
+      menu.append(completion);
+    }
+    const menuControl = el('div', { className: 'task-menu-control' }, [menuButton, menu]);
+    menuButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      menu.classList.toggle('hidden');
+      menuButton.setAttribute('aria-expanded', String(!menu.classList.contains('hidden')));
+    });
+    menuControl.addEventListener('focusout', () => setTimeout(() => {
+      if (!menuControl.contains(document.activeElement)) {
+        menu.classList.add('hidden');
+        menuButton.setAttribute('aria-expanded', 'false');
+      }
+    }, 0));
     const statusSelect = el('select', { className: 'status-select', ariaLabel: `Change status for ${task.title}`, disabled: !canChangeStatus(task) }, [
       el('option', { value: 'todo', text: 'To Do' }),
       el('option', { value: 'in_progress', text: 'In Progress' }),
@@ -101,18 +150,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         toast(error.message, 'error');
       }
     });
+    const labelList = el('div', { className: 'label-list' }, task.labels.map((label) => el('span', { className: 'task-label', text: label.name, style: `--label-color:${label.color}` })));
+    const description = task.description ? el('p', { className: 'task-card-description', text: task.description }) : null;
+    const metrics = el('div', { className: 'task-metrics' }, [
+      task.comment_count !== undefined ? metric('chat_bubble', task.comment_count, 'Comments') : null,
+      task.attachment_count !== undefined ? metric('attachment', task.attachment_count, 'Attachments') : null,
+      task.checklist_total !== undefined ? metric('checklist', `${task.checklist_completed || 0}/${task.checklist_total}`, 'Checklist progress') : null,
+    ].filter(Boolean));
+    const assignee = task.assigned_to
+      ? avatar(task.assigned_to, 'avatar avatar-task')
+      : el('span', { className: 'avatar avatar-task avatar-unassigned', text: '?', title: 'Unassigned' });
+    card.classList.toggle('task-completed', task.status === 'done');
     card.append(
+      el('div', { className: 'task-card-top' }, [labelList, menuControl]),
       el('h4', {}, [el('a', { href: `task-details.html?id=${task.id}`, text: task.title })]),
-      el('span', { className: `badge badge-${task.priority}`, text: task.priority }),
-      el('div', { className: 'label-list' }, task.labels.map((label) => el('span', { className: 'task-label', text: label.name, style: `--label-color:${label.color}` }))),
-      el('div', { className: 'task-card-meta' }, [
-        el('span', { text: task.assigned_to?.full_name || task.assigned_to?.username || 'Unassigned' }),
-        el('span', { className: task.is_overdue ? 'overdue' : '', text: dueText(task) }),
-      ]),
-      el('div', { className: 'task-card-meta' }, [
-        el('span', { text: `${task.comment_count} comments` }),
-        el('span', { text: `#${task.position}` }),
-      ]),
+      description,
+      el('div', { className: 'task-due-row' }, [icon(task.is_overdue ? 'warning' : 'event', 'Due date'), el('span', { className: task.is_overdue ? 'overdue' : '', text: dueText(task) }), el('span', { className: `badge badge-${task.priority}`, text: task.priority })]),
+      el('div', { className: 'task-card-footer' }, [metrics, assignee]),
       statusSelect,
     );
     card.addEventListener('dragstart', () => card.classList.add('dragging'));
@@ -131,6 +185,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     board.replaceChildren(...definitions.map(([status, label]) => {
       const statusTasks = visible.filter((task) => task.status === status).sort((a, b) => a.position - b.position);
       const list = el('div', { className: 'task-list', 'data-status': status }, statusTasks.map(taskCard));
+      if (!statusTasks.length) list.append(el('div', { className: 'board-empty', text: 'No tasks in this section.' }));
+      if (canManage()) {
+        const addTask = el('button', { className: 'column-add-task', type: 'button' }, [icon('add', 'Add task'), el('span', { text: 'Add task' })]);
+        addTask.addEventListener('click', taskForm);
+        list.append(addTask);
+      }
       if (canManage()) {
         list.addEventListener('dragover', (event) => event.preventDefault());
         list.addEventListener('drop', async (event) => {
@@ -140,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             await TaskForgeAPI.request(`/tasks/${dragged.dataset.taskId}/position/`, {
               method: 'PATCH',
-              body: JSON.stringify({ status, position: list.children.length }),
+              body: JSON.stringify({ status, position: statusTasks.length }),
             });
             await reloadTasks();
           } catch (error) {
@@ -348,7 +408,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadData();
   if (new URLSearchParams(location.search).get('activity') === 'open') await openActivity();
   TaskForgeRealtime.connect(`/projects/${projectId}/board/`, (event) => {
-    if (!['task_created', 'task_updated', 'task_deleted', 'task_status_changed', 'comment_created', 'member_added', 'attachment_added', 'checklist_updated'].includes(event.type)) return;
+    if (!['task_created', 'task_updated', 'task_deleted', 'task_status_changed', 'comment_created', 'member_added', 'attachment_added', 'attachment_deleted', 'checklist_updated'].includes(event.type)) return;
     clearTimeout(realtimeReload);
     realtimeReload = setTimeout(() => {
       if (event.type === 'member_added') loadData();

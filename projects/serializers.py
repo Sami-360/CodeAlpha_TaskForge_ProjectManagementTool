@@ -200,6 +200,7 @@ class ProjectActivitySerializer(serializers.ModelSerializer):
             ProjectActivity.Action.TASK_DELETED: f'{actor} deleted task "{detail.get("task_title", "Task")}".',
             ProjectActivity.Action.COMMENT_ADDED: f'{actor} commented on "{detail.get("task_title", "a task")}".',
             ProjectActivity.Action.ATTACHMENT_ADDED: f'{actor} attached "{detail.get("filename", "a file")}".',
+            ProjectActivity.Action.ATTACHMENT_DELETED: f'{actor} deleted attachment "{detail.get("filename", "a file")}".',
             ProjectActivity.Action.CHECKLIST_UPDATED: f'{actor} updated a checklist.',
         }
         return messages.get(activity.action, f'{actor} updated the project.')

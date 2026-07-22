@@ -114,6 +114,17 @@ class TaskAttachment(models.Model):
     class Meta:
         ordering = ['-uploaded_at']
 
+    def save(self, *args, **kwargs):
+        """Keep upload metadata valid for admin and programmatic uploads."""
+        if self.file:
+            if not self.file_size:
+                self.file_size = self.file.size
+            if not self.original_name:
+                from pathlib import Path
+
+                self.original_name = Path(self.file.name).name[:255]
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.original_name
 

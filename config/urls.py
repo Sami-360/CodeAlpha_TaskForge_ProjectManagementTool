@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from config.views import health_check
-from projects.views import DashboardView, ProjectLabelDetailView
+from projects.views import DashboardView, GlobalSearchView, ProjectLabelDetailView
 
 admin.site.site_header = 'TaskForge Administration'
 admin.site.site_title = 'TaskForge Admin'
@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
     path('api/projects/', include('projects.urls')),
     path('api/dashboard/', DashboardView.as_view(), name='dashboard'),
+    path('api/search/', GlobalSearchView.as_view(), name='global-search'),
     path('api/project-labels/<int:pk>/', ProjectLabelDetailView.as_view(), name='project-label-detail'),
     path('api/', include('tasks.urls')),
     path('api/', include('comments.urls')),

@@ -84,6 +84,51 @@ class ProjectListCreateView(generics.ListCreateAPIView):
         )
 
 
+class GlobalSearchView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get('q', '').strip()
+        if len(query) < 2:
+            raise ValidationError({'q': 'Enter at least 2 characters.'})
+
+        projects = project_queryset_for(request.user).filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        ).order_by('-updated_at')[:6]
+        tasks = (
+            Task.objects.filter(project__memberships__user=request.user)
+            .filter(Q(title__icontains=query) | Q(description__icontains=query))
+            .select_related('project')
+            .order_by('-updated_at')
+            .distinct()[:6]
+        )
+        return Response(
+            {
+                'query': query,
+                'projects': [
+                    {
+                        'id': project.pk,
+                        'name': project.name,
+                        'description': project.description,
+                        'updated_at': project.updated_at,
+                    }
+                    for project in projects
+                ],
+                'tasks': [
+                    {
+                        'id': task.pk,
+                        'title': task.title,
+                        'project': {'id': task.project_id, 'name': task.project.name},
+                        'status': task.status,
+                        'priority': task.priority,
+                        'due_date': task.due_date,
+                    }
+                    for task in tasks
+                ],
+            }
+        )
+
+
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, ProjectObjectPermission]
     serializer_class = ProjectSerializer

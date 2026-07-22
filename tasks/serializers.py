@@ -25,6 +25,10 @@ class TaskSerializer(serializers.ModelSerializer):
         write_only=True,
     )
     comment_count = serializers.SerializerMethodField()
+    attachment_count = serializers.SerializerMethodField()
+    checklist_total = serializers.SerializerMethodField()
+    checklist_completed = serializers.SerializerMethodField()
+    checklist_percentage = serializers.SerializerMethodField()
     is_overdue = serializers.SerializerMethodField()
     due_state = serializers.SerializerMethodField()
     labels = ProjectLabelSerializer(many=True, read_only=True)
@@ -44,6 +48,10 @@ class TaskSerializer(serializers.ModelSerializer):
             'due_date',
             'position',
             'comment_count',
+            'attachment_count',
+            'checklist_total',
+            'checklist_completed',
+            'checklist_percentage',
             'is_overdue',
             'due_state',
             'labels',
@@ -79,6 +87,21 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def get_comment_count(self, task):
         return getattr(task, 'comment_count', 0)
+
+    def get_attachment_count(self, task):
+        return getattr(task, 'attachment_count', 0)
+
+    def get_checklist_total(self, task):
+        return getattr(task, 'checklist_total', 0)
+
+    def get_checklist_completed(self, task):
+        return getattr(task, 'checklist_completed', 0)
+
+    def get_checklist_percentage(self, task):
+        total = self.get_checklist_total(task)
+        if not total:
+            return 0
+        return round((self.get_checklist_completed(task) / total) * 100)
 
     def get_is_overdue(self, task):
         from django.utils import timezone

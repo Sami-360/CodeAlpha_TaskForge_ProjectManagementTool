@@ -46,7 +46,16 @@ def task_queryset_for(user):
         Task.objects.filter(project__memberships__user=user)
         .select_related('project', 'created_by', 'assigned_to')
         .prefetch_related('labels')
-        .annotate(comment_count=Count('comments', distinct=True))
+        .annotate(
+            comment_count=Count('comments', distinct=True),
+            attachment_count=Count('attachments', distinct=True),
+            checklist_total=Count('checklists__items', distinct=True),
+            checklist_completed=Count(
+                'checklists__items',
+                filter=Q(checklists__items__is_completed=True),
+                distinct=True,
+            ),
+        )
         .distinct()
     )
 
@@ -373,9 +382,21 @@ class TaskAttachmentDestroyView(generics.DestroyAPIView):
         if instance.uploaded_by_id != self.request.user.id and not can_manage_tasks(instance.task.project, self.request.user):
             raise PermissionDenied('Only the uploader or a project manager can delete this attachment.')
         task = instance.task
+        attachment_id = instance.pk
+        filename = instance.original_name
         instance.delete()
-        record_activity(project=task.project, actor=self.request.user, action=ProjectActivity.Action.CHECKLIST_UPDATED, task=task)
-        broadcast_project_event(task.project_id, 'checklist_updated', {'task_id': task.pk})
+        record_activity(
+            project=task.project,
+            actor=self.request.user,
+            action=ProjectActivity.Action.ATTACHMENT_DELETED,
+            task=task,
+            metadata={'filename': filename, 'task_title': task.title},
+        )
+        broadcast_project_event(
+            task.project_id,
+            'attachment_deleted',
+            {'task_id': task.pk, 'id': attachment_id},
+        )
 
 
 class TaskAttachmentDownloadView(APIView):

@@ -226,12 +226,16 @@ Legacy `/pages/*.html` bookmarks remain supported and redirect to the canonical 
 | POST | `/api/auth/login/` | Public |
 | POST | `/api/auth/token/refresh/` | Public |
 | GET, PATCH | `/api/auth/me/` | Authenticated user |
+| DELETE | `/api/auth/me/avatar/` | Authenticated user |
 | GET, POST | `/api/projects/` | Authenticated; creator becomes owner |
 | GET | `/api/projects/{id}/` | Project member |
 | PATCH, DELETE | `/api/projects/{id}/` | Owner |
 | GET | `/api/projects/{id}/members/` | Project member |
 | POST | `/api/projects/{id}/members/` | Owner |
 | PATCH, DELETE | `/api/projects/{id}/members/{member_id}/` | Owner; owner protected |
+| GET, POST | `/api/projects/{id}/labels/` | Project member to read; owner or manager to create |
+| GET | `/api/projects/{id}/activities/` | Project member |
+| PATCH, DELETE | `/api/project-labels/{id}/` | Owner or manager |
 | GET | `/api/projects/{id}/tasks/` | Project member |
 | POST | `/api/projects/{id}/tasks/` | Owner or manager |
 | GET | `/api/tasks/{id}/` | Project member |
@@ -239,6 +243,17 @@ Legacy `/pages/*.html` bookmarks remain supported and redirect to the canonical 
 | PATCH | `/api/tasks/{id}/status/` | Owner, manager, or assignee |
 | PATCH | `/api/tasks/{id}/assign/` | Owner or manager |
 | PATCH | `/api/tasks/{id}/position/` | Owner or manager |
+| PATCH | `/api/tasks/{id}/complete/` | Owner, manager, or assignee |
+| PATCH | `/api/tasks/{id}/reopen/` | Owner, manager, or assignee |
+| PATCH | `/api/tasks/{id}/labels/` | Owner or manager |
+| GET, POST | `/api/tasks/{id}/attachments/` | Project member |
+| GET | `/api/task-attachments/{id}/download/` | Project member |
+| DELETE | `/api/task-attachments/{id}/` | Uploader, owner, or manager |
+| GET, POST | `/api/tasks/{id}/checklists/` | Project member to read; owner or manager to create |
+| DELETE | `/api/checklists/{id}/` | Owner or manager |
+| POST | `/api/checklists/{id}/items/` | Owner, manager, or assignee |
+| PATCH, DELETE | `/api/checklist-items/{id}/` | Owner, manager, or assignee |
+| PATCH | `/api/checklist-items/{id}/toggle/` | Owner, manager, or assignee |
 | GET, POST | `/api/tasks/{id}/comments/` | Project member |
 | PATCH | `/api/comments/{id}/` | Comment author |
 | DELETE | `/api/comments/{id}/` | Author, owner, or manager |
@@ -246,6 +261,7 @@ Legacy `/pages/*.html` bookmarks remain supported and redirect to the canonical 
 | PATCH | `/api/notifications/{id}/read/` | Authenticated recipient |
 | PATCH | `/api/notifications/read-all/` | Authenticated recipient |
 | GET | `/api/dashboard/` | Authenticated user |
+| GET | `/api/search/?q={query}` | Authenticated; returns authorized projects and tasks only |
 
 Use `Authorization: Bearer <access-token>` for protected APIs. Task list filters are `status`, `priority`, `assigned_to`, and `overdue=true|false`. See `docs/api-documentation.md` for request details.
 
@@ -253,7 +269,7 @@ Use `Authorization: Bearer <access-token>` for protected APIs. Task list filters
 
 | Route | Access | Events |
 |---|---|---|
-| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added`, `attachment_created`, `attachment_deleted`, `checklist_updated` |
+| `/ws/projects/{project_id}/board/` | Project member | `task_created`, `task_updated`, `task_deleted`, `task_status_changed`, `comment_created`, `member_added`, `attachment_added`, `attachment_deleted`, `checklist_updated` |
 | `/ws/notifications/` | Authenticated user, own group only | `notification_created` |
 
 The server first sends:
@@ -287,14 +303,17 @@ Get-ChildItem frontend\js\*.js | ForEach-Object { node --check $_.FullName }
 
 Manual flows are tracked in `docs/testing-checklist.md`.
 
-Latest full verification:
+Latest full verification (`python manage.py test --keepdb`):
 
 ```text
-Found 73 test(s).
-Ran 73 tests in 405.010s
+Found 79 test(s).
+Ran 79 tests in 352.409s
 OK
 System check identified no issues (0 silenced).
 ```
+
+`--keepdb` safely reuses the isolated `test_taskforge` database and does not access
+or reset the live `taskforge` data.
 
 ## 19. Security
 
@@ -381,6 +400,14 @@ python manage.py send_due_task_notifications
 ```
 
 New endpoint details and permissions are documented in [docs/api-documentation.md](docs/api-documentation.md). Authenticated screenshot capture steps are in [docs/screenshots/enhancement-screenshot-guide.md](docs/screenshots/enhancement-screenshot-guide.md).
+
+## Known Production Limitations
+
+- The current in-memory Channels layer works only in one application process. A multi-process deployment requires Redis or another shared channel layer.
+- The repository contains development settings, not a hardened production settings module. Production deployment must set `DJANGO_DEBUG=False`, use a strong secret, restrict hosts and CORS origins, and terminate HTTPS at a reverse proxy or hosting platform.
+- Django's development server and Python's static file server are local tools only. Production needs an ASGI server plus dedicated static and media serving.
+- Uploaded media is stored on the local filesystem. Multi-instance or ephemeral hosting requires shared/object storage and a backup policy.
+- Automated PostgreSQL backups, centralized logging, monitoring, and rate limiting are deployment responsibilities and are not configured in this repository.
 
 ## Troubleshooting
 

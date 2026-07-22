@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from projects.models import Project, ProjectMember
+from tasks.models import Task
 
 User = get_user_model()
 
@@ -173,3 +174,28 @@ class ProjectAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         member_record.refresh_from_db()
         self.assertEqual(member_record.role, ProjectMember.Role.MANAGER)
+
+    def test_global_search_is_membership_scoped(self):
+        visible = self.create_project('Visible launch')
+        hidden = Project.objects.create(name='Hidden launch', owner=self.other)
+        ProjectMember.objects.create(project=visible, user=self.member)
+        visible_task = Task.objects.create(
+            project=visible, title='Launch checklist', created_by=self.owner
+        )
+        Task.objects.create(
+            project=hidden, title='Launch secret', created_by=self.other
+        )
+        self.authenticate(self.member)
+
+        response = self.client.get(reverse('global-search'), {'q': 'launch'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([item['id'] for item in response.data['projects']], [visible.id])
+        self.assertEqual([item['id'] for item in response.data['tasks']], [visible_task.id])
+
+    def test_global_search_requires_meaningful_query(self):
+        self.authenticate(self.owner)
+
+        response = self.client.get(reverse('global-search'), {'q': 'a'})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
