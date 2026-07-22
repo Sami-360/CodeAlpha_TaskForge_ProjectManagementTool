@@ -215,6 +215,8 @@ python -m http.server 5500 --bind 127.0.0.1 --directory .
 
 Open `http://127.0.0.1:5500/`. The root entry redirects to the correct page under `frontend/pages/`; do not append a second path manually. Keep both terminal servers running. The frontend calls the API and WebSockets at `127.0.0.1:8000`.
 
+Legacy `/pages/*.html` bookmarks remain supported and redirect to the canonical `/frontend/pages/*.html` routes while preserving query parameters.
+
 ## 16. API Endpoints
 
 | Method | Path | Permission |
