@@ -6,7 +6,7 @@
 .stat:nth-child(3n)::after { background: var(--warning); }
 .stat:hover { border-color: #bdccd3; box-shadow: var(--shadow); transform: translateY(-2px); }
 .stat-label { color: var(--text-muted); font-size: 11px; font-weight: 700; text-transform: uppercase; }
-.stat-value { display: block; margin-top: 12px; font-family: Manrope, Inter, sans-serif; font-size: 29px; font-weight: 700; }
+.stat-value { display: block; margin-top: 12px; font-family: "Segoe UI", Arial, sans-serif; font-size: 29px; font-weight: 700; }
 .dashboard-grid { grid-template-columns: 1.2fr 0.8fr; }
 .insights-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 20px; }
 .insight-list { display: grid; gap: 12px; }

@@ -225,7 +225,7 @@
       document.querySelectorAll('[data-user-name]').forEach((node) => { node.textContent = user.full_name || user.username; });
       TaskForgeSidebar.setUser(user);
       enhanceTopbar(user);
-      await loadNotifications();
+      loadNotifications();
       if (new URLSearchParams(location.search).get('notifications') === 'open') {
         document.getElementById('notification-panel')?.classList.remove('hidden');
         notificationButton?.setAttribute('aria-expanded', 'true');

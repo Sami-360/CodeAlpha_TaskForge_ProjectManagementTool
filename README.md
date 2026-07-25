@@ -357,7 +357,7 @@ or reset the live `taskforge` data.
 ## 19. Security
 
 - `.env`, virtual environments, media, caches, logs, database dumps, and runtime files are ignored.
-- Passwords are hashed and never returned.
+- New and successfully upgraded passwords use Argon2id; legacy PBKDF2 hashes remain supported and upgrade automatically after a valid login. Passwords are never returned.
 - JWT protects every private REST endpoint.
 - Querysets hide unrelated project data.
 - Backend permissions prevent role elevation, non-member assignment, unauthorized edits, and comment ownership violations.
@@ -449,6 +449,8 @@ No remote push is performed automatically.
 ## 23. License
 
 TaskForge is available under the [MIT License](LICENSE).
+
+The bundled Material Symbols icon-font subset is licensed separately under Apache License 2.0; see [frontend/fonts/LICENSE.txt](frontend/fonts/LICENSE.txt).
 
 ## Professional Enhancements
 

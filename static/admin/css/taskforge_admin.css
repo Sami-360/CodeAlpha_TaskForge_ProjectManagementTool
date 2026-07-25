@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,400,0,0');
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('../../fonts/material-symbols-outlined.woff2') format('woff2');
+}
 
 :root {
   color-scheme: light;
@@ -29,7 +35,7 @@
 
 html, html[data-theme="auto"], html[data-theme="dark"] { color-scheme: light; --body-bg: #f6f8fb; --body-fg: #132332; --darkened-bg: #edf3f5; --border-color: #d9e2e7; --hairline-color: #e4eaee; --link-fg: #087f6b; --link-hover-color: #066b5b; --selected-bg: #edf7f4; --selected-row: #f4faf8; }
 html, body { background: #f6f8fb !important; color: #132332; }
-body { font-family: Inter, "Segoe UI", sans-serif; letter-spacing: 0; }
+body { font-family: "Segoe UI", Arial, sans-serif; letter-spacing: 0; }
 .theme-toggle { display: none !important; }
 #container { min-width: 0; }
 #header { min-height: 68px; padding: 10px 24px; background: var(--secondary); border-bottom: 1px solid #394852; box-shadow: 0 3px 14px rgba(16, 29, 39, .14); }
@@ -68,7 +74,7 @@ div.breadcrumbs a { color: #e8f0f3; }
 .admin-model-link:hover > a:first-child { background: #2e3c46; color: #fff; }
 .admin-model-link.current-model > a:first-child { background: #344852; border-color: #49606b; color: #fff; box-shadow: inset 3px 0 #73d9ba; }
 .admin-model-link[hidden], .admin-nav-group[hidden] { display: none; }
-.admin-nav-icon { font-family: "Material Symbols Outlined"; font-size: 18px; font-weight: normal; line-height: 1; }
+.admin-nav-icon { font-family: "Material Symbols Outlined"; font-size: 18px; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: 0; text-transform: none; white-space: nowrap; font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
 .admin-add-link { display: grid; flex: 0 0 27px; height: 27px; place-items: center; border-radius: 5px; color: #8de0c7; font-size: 18px; text-decoration: none; }
 .admin-add-link:hover { background: #3b4a54; color: #fff; }
 .admin-no-permission { padding: 10px; color: #bdc8ce; }
